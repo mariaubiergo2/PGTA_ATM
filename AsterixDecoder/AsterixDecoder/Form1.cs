@@ -780,10 +780,10 @@ namespace AsterixDecoder
             try
             {
                 // Abre un nuevo libro de Excel o carga un archivo existente
-                Excel.Workbook workbook = excelApp.Workbooks.Open(rutaArchivo);
+                dynamic workbook = excelApp.Workbooks.Open(rutaArchivo);
 
                 // Itera sobre las hojas de trabajo en el libro
-                foreach (Excel.Worksheet worksheet in workbook.Sheets)
+                foreach (dynamic worksheet in workbook.Sheets)
                 {
                     // Itera sobre las celdas en la hoja de trabajo
                     for (int row = 1; row <= worksheet.UsedRange.Rows.Count; row++)
