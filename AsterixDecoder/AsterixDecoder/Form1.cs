@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using CsvHelper;
 using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
-using GMap.NET.WindowsForms.Markers;
 using System.Xml;
-using GMap.NET.WindowsForms.ToolTips;
-
+using AsterixDecoder.Data_Items_Objects;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 namespace AsterixDecoder
 {
     public partial class MainWindow : Form
@@ -22,12 +19,11 @@ namespace AsterixDecoder
         //Decoding
         //-----------------------------------------------------------
 
-        //Octet position analysed/decoded
-        int n_datarecord;
+        
         //All the CAT048 data units decoded
         List<CAT048> elements = new List<CAT048>();
-        //Number of csv files that have been done
-        int n_outputCSV;
+
+        List<ACinfo> aircraftsInfo = new List<ACinfo>();
 
         //Simulation
         //-----------------------------------------------------------
@@ -55,15 +51,26 @@ namespace AsterixDecoder
 
         bool endedSimulation;
 
+        // Store the initial form size
+        private int YourInitialFormWidth;
+        private int YourInitialFormHeight;
+
         public MainWindow()
         {
             InitializeComponent();
 
+            // Store the initial form size when the form is loaded
+            YourInitialFormWidth = this.Width;
+            YourInitialFormHeight = this.Height;
+
+            this.Resize += MainWindow_Resize;
+
             viewPanel.Visible = false;
-            csvGridView.Visible = false;
             progressBar1.Visible = false;
             progressLbl.Visible = false;
-            gmap.Visible = false;
+            gMapControl1.Visible = true;
+            infoLbl.Visible = false;
+            firstTimeSimOpened = true;
 
             //Logo
             this.projectDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -75,61 +82,53 @@ namespace AsterixDecoder
             title.Font = new Font("Cascadia Code", 16);
             title.Text = "AsTeRiX DeCoDeR";
             title.TextAlign = ContentAlignment.TopCenter;
-            title.BackColor = Color.Black;
+            title.BackColor = Color.Black;            
+                        
 
+            //Expand screen
+            this.TopMost = true;
+            this.WindowState = FormWindowState.Normal;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
 
-
-            //CSV grid 
-            generateCSVgrid();
-            n_outputCSV = 0;
-
-            infoLbl.Visible = false;
-            firstTimeSimOpened = true;
-
+            
         }
 
-
-        //Customize the CSV grid
-        private void generateCSVgrid()
+        private void MainWindow_Resize(object sender, EventArgs e)
         {
-            csvGridView.DefaultCellStyle.Font = new Font("Cascadia Code", 11);
-            csvGridView.CellBorderStyle = DataGridViewCellBorderStyle.Single;
-            csvGridView.GridColor = SystemColors.ActiveBorder;
-            csvGridView.MultiSelect = false;
-            csvGridView.ReadOnly = true;
-            csvGridView.AllowUserToAddRows = false;
-            csvGridView.AllowUserToDeleteRows = false;
-            csvGridView.AllowUserToOrderColumns = true;
-            csvGridView.AllowUserToResizeColumns = true;
-            csvGridView.AllowUserToResizeRows = true;
-            csvGridView.AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
-            {
-                BackColor = System.Drawing.Color.White
-            };
-            csvGridView.BackgroundColor = System.Drawing.Color.White;
-            csvGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            csvGridView.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-            {
-                Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold),
-                BackColor = System.Drawing.Color.SteelBlue,
-                ForeColor = System.Drawing.Color.White
-            };
-            csvGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            ResizeAllElements();
         }
 
-        //Decoding to CSV
-        private void decodeAll(string path, int init, int final)
+        private void ResizeAllElements()
         {
-            //Initiate progress bar
-            progressBar1.Value = 0;
-            progressLbl.Text = "Loading...";
-            progressLbl.Visible = true;
+            foreach (Control control in this.Controls)
+            {
+                if (control.Name != "flowLayoutPanel1")
+                {
+                    // Adjust the size and position of each control based on the form size
 
-            //Decodify
-            decodify(path, init, final);
+                    // Calculate the new size and position based on the form size
+                    float scaleX = (float)this.Width / (float)YourInitialFormWidth;
+                    float scaleY = (float)this.Height / (float)YourInitialFormHeight;
+
+                    int newX = (int)(control.Location.X * scaleX);
+                    int newY = (int)(control.Location.Y * scaleY);
+                    int newWidth = (int)(control.Width * scaleX);
+                    int newHeight = (int)(control.Height * scaleY);
+
+                    // Set the new size and position
+                    control.Location = new Point(newX, newY);
+                    control.Size = new Size(newWidth, newHeight);
+                }
+                
+            }
+
+            YourInitialFormWidth = this.Width;
+            YourInitialFormHeight = this.Height;
+
         }
+
+
+        
 
         //Decoding to CSV
         private void ReportProgess(int percent)
@@ -147,130 +146,28 @@ namespace AsterixDecoder
             }
         }
 
-        //Decoding to CSV
-        public void decodify(string path, int init, int final)
+
+        //Reading a CSV file
+        public void readCSV(string filePath)
         {
-            byte[] message = File.ReadAllBytes(path);
-            int i = 0;
-
-            // Number of total data records in the file
-            this.n_datarecord = 0;
-
-            while (i < message.Length)
+            string[] lines = System.IO.File.ReadAllLines(filePath);
+            if (lines.Length > 0)
             {
-                //First octet describes the category of the message
-                byte cat = message[i];
-
-                //Second and third byte equivals to the length of the data record 
-                byte b1 = message[i + 1];
-                byte b2 = message[i + 2];
-
-                //Getting the length of the message 
-                int length_dr = b1 << 8 | b2;
-
-                if (cat == 48)
+                //first line dissmissed because it is the header 
+                for (int i = 1; i < lines.Length; i++)
                 {
-                    List<byte> datablock = new List<byte>();
-                    List<byte> FSPEC = new List<byte>();
+                    string[] row = Regex.Split(lines[i], ";");
 
-                    //Identification of the length of each FSPEC. 
-                    int j = 1;
-                    byte octet = message[i + 3];
-                    if (octet % 2 != 0) // This octet is odd (ends in 1) then the next one is included
-                    {
-                        // j = 1;
-                        FSPEC.Add(octet);
-                        while (octet % 2 != 0) // The last octet ends in 0 indicating there are no more
-                        {
-                            octet = message[i + 3 + j];
-                            FSPEC.Add(octet);
-                            j++;
-                        }
-                    }
-                    else
-                    {
-                        // j = 1;
-                        FSPEC.Add(octet);
-                    }
+                    ACinfo ac = new ACinfo(row);
 
-                    //Length of the Asterix record length minus the Cat octet and the 2 length octets 
-                    while (j < (length_dr - 3))
-                    {
-                        datablock.Add(message[i + j + 3]);
-                        j++;
-                    }
+                    aircraftsInfo.Add(ac);
 
-                    //Funció per a decodificar la cat48 
-                    CAT048 element = new CAT048(FSPEC, datablock, 0, n_datarecord);
-
-                    if (element.TYP == "No detection" || element.TYP == "Single PSR detection" || element.TYP == "Single SSR detection" || element.TYP == "SSR+PSR detection" || element.Mode_3A == "7777")
-                    { }
-                    else
-                    {
-                        this.elements.Add(element);
-
-                    }
                 }
 
-                else
-                {
-                    //Passem olimpicament del missatge
-                }
-
-                int valProgress = Convert.ToInt32(Convert.ToDouble(i) / message.Length * 100);
-                ReportProgess(valProgress);
-
-                this.n_datarecord++;
-                i = i + length_dr;
-
+                popUpLabel(Convert.ToString(aircraftsInfo.Count));
             }
-
-        }
-
-        //Reading a CSV file and showing in the DataGridView
-        public DataTable readCSV(string filePath)
-        {
-            DataTable dt = new DataTable();
-            try
-            {
-                string[] lines = System.IO.File.ReadAllLines(filePath);
-                if (lines.Length > 0)
-                {
-                    //first line to create header
-                    string firstLine = lines[0];
-                    string[] headerLabels = firstLine.Split(',');
-                    foreach (string headerWord in headerLabels)
-                    {
-                        dt.Columns.Add(new DataColumn(headerWord));
-                    }
-                    //For Data
-                    for (int i = 1; i < lines.Length; i++)
-                    {
-                        string pattern = @"(?<=,|^)(?=(?:[^""]*""[^""]*"")*(?![^""]*""))";
-                        string[] dataWords = Regex.Split(lines[i], pattern);
-                        DataRow dr = dt.NewRow();
-                        int columnIndex = 0;
-
-                        foreach (string headerWord in headerLabels)
-                        {
-                            string cleanedItem = dataWords[columnIndex + 1].Trim('"').Trim(',').Replace('"', ' ');
-                            dr[headerWord] = cleanedItem;
-                            columnIndex++;
-                        }
-                        dt.Rows.Add(dr);
-                    }
-                }
-                if (dt.Rows.Count > 0)
-                {
-                    csvGridView.DataSource = dt;
-                }
-                return dt;
-            }
-            catch
-            {
-                popUpLabel("❌ Something went wrong... Please, try again!");
-                return dt;
-            }
+            
+            
         }
 
         //Decoding to CSV
@@ -282,105 +179,14 @@ namespace AsterixDecoder
             string imagePath = Path.Combine(this.projectDirectory, "img/playButton.png");
             playPictureBox.Image = new Bitmap(imagePath);
             this.playing = false;
-            if (elements.Count != 0)
-            {
-                csvGridView.Visible = true;
-            }
-        }
-
-        //Decoding to CSV
-        private void importBinaryFileToDecodeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //Hide simulation stuff
-            viewHideSimulation(false);
-
-            try
-            {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Filter = "AST File (*.ast)|*.ast|BIN Files (*.bin)|*.bin";
-                using (ofd)
-                {
-                    if (ofd.ShowDialog() == DialogResult.OK)
-                    {
-                        if (elements.Count != 0)
-                        {
-                            this.elements = new List<CAT048>();
-                            this.aircraftsList = new Dictionary<string, List<CAT048_simulation>>();
-                            this.aircraftsMarkers = new Dictionary<string, RotatableMarker>();
-                            gmap.Overlays.Remove(markers);
-                            this.markers = new GMapOverlay("markers");
-                            showTime();
-                        }
-
-
-                        string path = ofd.FileName.ToString();
-
-                        decodeAll(path, 0, 0);
-
-                        popUpLabel("⏳ Preparing the decoded data items...");
-
-                        //Visualize CSV in the grid
-                        csvGridView.DataSource = elements;
-                        csvGridView.Visible = true;
-                    }
-                }
-
-                this.isSimulating = true;
-            }
-            catch
-            {
-                popUpLabel("❌ Something went wrong... Please, try again!");
-            }
-            
-        }
-
-
-        //Save to CSV
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-
-            // Set initial directory and file name filters if needed
-            saveFileDialog.InitialDirectory = this.projectDirectory;
-            saveFileDialog.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
-
-            try
-            {
-                // Show the dialog and check if the user clicked OK
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Get the selected file name
-                    string filePath = saveFileDialog.FileName;
-
-                    // Your existing code to write to CSV
-                    using (var writer = new StreamWriter(filePath))
-                    using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                    {
-                        csvWriter.WriteRecords<CAT048>(elements);
-                    }
-
-                    if (elements.Count != 0)
-                    {
-                        popUpLabel("✅ Your file is correctly saved!");
-                    }
-                    else
-                    {
-                        popUpLabel("✅ Your file is correctly saved! Yet is empty.");
-                    }
-
-                }
-            }
-            catch
-            {
-                popUpLabel("❌ Something went wrong... Please, try again!");
-            }
 
         }
+
 
         public void viewHideSimulation(bool visible)
         {
             viewPanel.Visible = visible;
-            gmap.Visible = visible;
+            gMapControl1.Visible = visible;
         }
 
         public void popUpLabel(string text)
@@ -402,7 +208,7 @@ namespace AsterixDecoder
 
         public void viewHideDecoder(bool visible)
         {
-            csvGridView.Visible = visible;
+            
         }
 
         //To generate the map from the elements decoded.
@@ -447,18 +253,18 @@ namespace AsterixDecoder
                 ACicon = new Bitmap(new Bitmap(iconPath), new Size(this.ACiconSize, this.ACiconSize));
 
                 //Gmap
-                gmap.MapProvider = GMapProviders.GoogleMap;
-                gmap.Position = new PointLatLng(41.298, 2.080);
-                gmap.MinZoom = 2;
-                gmap.MaxZoom = 24;
-                gmap.Zoom = 9;
-                gmap.AutoScroll = true;
-                gmap.DragButton = MouseButtons.Left;
-                gmap.CanDragMap = true;
+                gMapControl1.MapProvider = GMapProviders.GoogleMap;
+                gMapControl1.Position = new PointLatLng(41.298, 2.080);
+                gMapControl1.MinZoom = 2;
+                gMapControl1.MaxZoom = 24;
+                gMapControl1.Zoom = 9;
+                gMapControl1.AutoScroll = true;
+                gMapControl1.DragButton = MouseButtons.Left;
+                gMapControl1.CanDragMap = true;
 
                 IsMapas.SelectedItem = "Google Maps Callejero";
 
-                Controls.Add(gmap);
+                Controls.Add(gMapControl1);
 
                 speedDecisionBox.SelectedItem = "x 1";
                 speedDecisionBox.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -474,7 +280,7 @@ namespace AsterixDecoder
                 timer1.Stop();
             }
 
-            gmap.Visible = true;
+            gMapControl1.Visible = true;
         }
 
         public void showTime()
@@ -533,7 +339,7 @@ namespace AsterixDecoder
                     //Generate the dictionary with each AC_ID and its list of data items associated
                     generateACDictionaryFromElements();
 
-                    gmap.Visible = true;
+                    gMapControl1.Visible = true;
 
                     //Generate the dictionary with the AC_ID and its associated marker
                     aircraftsMarkers = new Dictionary<string, RotatableMarker>();
@@ -544,7 +350,7 @@ namespace AsterixDecoder
                     }
 
                     //First you generate the markers and then you put it in the map
-                    gmap.Overlays.Add(markers);
+                    gMapControl1.Overlays.Add(markers);
 
                 }
                 catch
@@ -831,23 +637,24 @@ namespace AsterixDecoder
         }
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            
 
         }
 
         private void IsMapas_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsMapas.Text == "Google Maps Satélite")
-                gmap.MapProvider = GMapProviders.GoogleSatelliteMap;
+                gMapControl1.MapProvider = GMapProviders.GoogleSatelliteMap;
             if (IsMapas.Text == "Google Maps Callejero")
-                gmap.MapProvider = GMapProviders.GoogleMap;
+                gMapControl1.MapProvider = GMapProviders.GoogleMap;
             if (IsMapas.Text == "Google Maps Híbrido")
-                gmap.MapProvider = GMapProviders.GoogleHybridMap;
+                gMapControl1.MapProvider = GMapProviders.GoogleHybridMap;
             if (IsMapas.Text == "OpenStreetMap")
-                gmap.MapProvider = GMapProviders.OpenStreetMap;
+                gMapControl1.MapProvider = GMapProviders.OpenStreetMap;
             if (IsMapas.Text == "OpenCycleMap")
-                gmap.MapProvider = GMapProviders.OpenCycleMap;
+                gMapControl1.MapProvider = GMapProviders.OpenCycleMap;
 
-            gmap.Refresh();
+            gMapControl1.Refresh();
 
         }
 
@@ -874,7 +681,7 @@ namespace AsterixDecoder
 
             this.endedSimulation = false;
 
-            gmap.Refresh();
+            gMapControl1.Refresh();
             
         }
 
@@ -899,7 +706,7 @@ namespace AsterixDecoder
 
             this.endedSimulation = true;
 
-            gmap.Refresh();
+            gMapControl1.Refresh();
 
         }
 
@@ -924,7 +731,6 @@ namespace AsterixDecoder
 
         private void importCSVFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             //Hide simulation stuff
             viewHideSimulation(false);
 
@@ -936,26 +742,78 @@ namespace AsterixDecoder
                 {
                     if (ofd.ShowDialog() == DialogResult.OK)
                     {
-                        
                         string path = ofd.FileName.ToString();
 
-                        DataTable dt = readCSV(path);
+                        readCSV(path);
 
-                        //Visualize CSV in the grid
-                        csvGridView.DataSource = dt;
-                        csvGridView.Visible = true;
-
-                        popUpLabel("⏳ Preparing the decoded data items...");
+                        popUpLabel("⏳ Loaded " + Convert.ToString(aircraftsInfo.Count) + " aircraft items!");
                     }
                 }
-
-                this.isSimulating = true;
             }
             catch
             {
                 popUpLabel("❌ Something went wrong... Please, try again!");
             }
 
+        }
+
+
+        private void importTakeOffsExcelFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx|All Files|*.*";
+                openFileDialog.Title = "Select an Excel File";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string selectedFilePath = openFileDialog.FileName;
+                    LeerArchivoExcel(selectedFilePath);
+                }
+            }
+        }
+
+        private void LeerArchivoExcel(string rutaArchivo)
+        {
+            Excel.Application excelApp = new Excel.Application();
+
+            try
+            {
+                // Abre un nuevo libro de Excel o carga un archivo existente
+                Excel.Workbook workbook = excelApp.Workbooks.Open(rutaArchivo);
+
+                // Itera sobre las hojas de trabajo en el libro
+                foreach (Excel.Worksheet worksheet in workbook.Sheets)
+                {
+                    // Itera sobre las celdas en la hoja de trabajo
+                    for (int row = 1; row <= worksheet.UsedRange.Rows.Count; row++)
+                    {
+                        for (int col = 1; col <= worksheet.UsedRange.Columns.Count; col++)
+                        {
+                            // Lee el valor de la celda actual
+                            string cellValue = Convert.ToString((worksheet.Cells[row, col] as Excel.Range).Value2);
+                            Console.Write(cellValue + "\t");
+                        }
+                        Console.WriteLine(); // Nueva línea después de leer una fila completa
+                    }
+                }
+
+                // Cierra el libro sin guardar cambios
+                workbook.Close(false);
+
+                // Cierra Excel
+                excelApp.Quit();
+            }
+            catch (Exception ex)
+            {
+                // Maneja cualquier excepción que pueda ocurrir durante el proceso
+                Console.WriteLine("Error al leer el archivo de Excel: " + ex.Message);
+            }
+            finally
+            {
+                // Asegúrate de liberar los recursos de Excel
+                Marshal.ReleaseComObject(excelApp);
+            }
         }
     }
 }

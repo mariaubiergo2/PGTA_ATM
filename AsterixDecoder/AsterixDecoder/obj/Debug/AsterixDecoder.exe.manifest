@@ -79,14 +79,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AsterixDecoder.exe" size="632288">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AsterixDecoder.exe" size="633312">
       <assemblyIdentity name="AsterixDecoder" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>g2gJvcxD3GcD2+QhruLIJ/7i13pDLWy6H8ZmHwvNKl4=</dsig:DigestValue>
+        <dsig:DigestValue>/1Li2Lprst26cZOmf5m96Nc8heHHxWRYib8FFm7ckcY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
