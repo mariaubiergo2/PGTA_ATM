@@ -10,20 +10,26 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using System.Xml;
 using AsterixDecoder.Data_Items_Objects;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.Runtime.InteropServices;
+using IronXL;
+
 namespace AsterixDecoder
 {
     public partial class MainWindow : Form
     {
-        //Decoding
-        //-----------------------------------------------------------
 
-        
         //All the CAT048 data units decoded
         List<CAT048> elements = new List<CAT048>();
 
-        List<ACinfo> aircraftsInfo = new List<ACinfo>();
+        //Aircrafts in P3 information
+        List<ACinfo> aircraftsInfo;
+        Dictionary<string, List<ACinfo>> aircraftsInfoDic;
+
+        //Take offs in P3 information
+        List<Ruta> despeguesList;
+
+        //AC classification P3 information
+        ACclassification ACclassification;
+
 
         //Simulation
         //-----------------------------------------------------------
@@ -43,6 +49,7 @@ namespace AsterixDecoder
 
         //-----------------------------------------------------------
         string projectDirectory;
+
         UsefulFunctions usefulFunctions = new UsefulFunctions();
 
         bool firstTimeSimOpened;
@@ -51,7 +58,7 @@ namespace AsterixDecoder
 
         bool endedSimulation;
 
-        // Store the initial form size
+        // Resize variables
         private int YourInitialFormWidth;
         private int YourInitialFormHeight;
 
@@ -153,6 +160,9 @@ namespace AsterixDecoder
             string[] lines = System.IO.File.ReadAllLines(filePath);
             if (lines.Length > 0)
             {
+                this.aircraftsInfo = new List<ACinfo>();
+                this.aircraftsInfoDic = new Dictionary<string, List<ACinfo>>();
+
                 //first line dissmissed because it is the header 
                 for (int i = 1; i < lines.Length; i++)
                 {
@@ -161,6 +171,18 @@ namespace AsterixDecoder
                     ACinfo ac = new ACinfo(row);
 
                     aircraftsInfo.Add(ac);
+
+                    //If the dictionary already has the key
+                    if (this.aircraftsInfoDic.ContainsKey(ac.I161_Tn))
+                    {
+                        this.aircraftsInfoDic[ac.I161_Tn].Add(ac);
+                    }
+                    else
+                    {
+                        List<ACinfo> list = new List<ACinfo>();
+                        list.Add(ac);
+                        this.aircraftsInfoDic.Add(ac.I161_Tn, list);
+                    }
 
                 }
 
@@ -775,44 +797,127 @@ namespace AsterixDecoder
 
         private void LeerArchivoExcel(string rutaArchivo)
         {
-            Excel.Application excelApp = new Excel.Application();
-
+            this.despeguesList = new List<Ruta>();
             try
             {
-                // Abre un nuevo libro de Excel o carga un archivo existente
-                dynamic workbook = excelApp.Workbooks.Open(rutaArchivo);
+                WorkBook workBook = WorkBook.Load(rutaArchivo);
+                WorkSheet workSheet = workBook.WorkSheets.First();
 
-                // Itera sobre las hojas de trabajo en el libro
-                foreach (dynamic worksheet in workbook.Sheets)
+                // Iterate over all cells in the worsheet
+                int row = 2;
+                string position;
+                while (row <= workSheet.RowCount)
                 {
-                    // Itera sobre las celdas en la hoja de trabajo
-                    for (int row = 1; row <= worksheet.UsedRange.Rows.Count; row++)
-                    {
-                        for (int col = 1; col <= worksheet.UsedRange.Columns.Count; col++)
-                        {
-                            // Lee el valor de la celda actual
-                            string cellValue = Convert.ToString((worksheet.Cells[row, col] as Excel.Range).Value2);
-                            Console.Write(cellValue + "\t");
-                        }
-                        Console.WriteLine(); // Nueva línea después de leer una fila completa
+                    position = "B" + Convert.ToString(row);
+                    Ruta despegue = new Ruta(
+                        Convert.ToString(workSheet["A" + Convert.ToString(row)]),
+                        Convert.ToString(workSheet["B" + Convert.ToString(row)]),
+                        Convert.ToString(workSheet["C" + Convert.ToString(row)]),
+                        Convert.ToString(workSheet["D" + Convert.ToString(row)]),
+                        Convert.ToString(workSheet["E" + Convert.ToString(row)]),
+                        Convert.ToString(workSheet["F" + Convert.ToString(row)]),
+                        Convert.ToString(workSheet["G" + Convert.ToString(row)]),
+                        Convert.ToString(workSheet["H" + Convert.ToString(row)])
+                        );
+
+                    if (despegue.id != null)
+                    {                        
+                        this.despeguesList.Add(despegue);
                     }
+                    row++;
                 }
 
-                // Cierra el libro sin guardar cambios
-                workbook.Close(false);
-
-                // Cierra Excel
-                excelApp.Quit();
+                popUpLabel("Correctly loaded "+ Convert.ToString(despeguesList.Count)+ " take off!");
+                                
             }
             catch (Exception ex)
             {
-                // Maneja cualquier excepción que pueda ocurrir durante el proceso
-                Console.WriteLine("Error al leer el archivo de Excel: " + ex.Message);
+                popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?");
             }
-            finally
+
+        }
+
+        private void importClassificationACsExcelFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                // Asegúrate de liberar los recursos de Excel
-                Marshal.ReleaseComObject(excelApp);
+                try
+                {
+                    openFileDialog.Filter = "Excel Files|*.xls;*.xlsx";
+                    openFileDialog.Title = "Select an Excel File";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string selectedFilePath = openFileDialog.FileName;
+                                            
+                        WorkBook workBook = WorkBook.Load(selectedFilePath);
+                        WorkSheet workSheet = workBook.WorkSheets.First();
+
+                        this.ACclassification = new ACclassification();
+
+                        // Iterate over all cells in the worsheet
+                        foreach (var cell in workSheet)
+                        {
+                            if (cell.Text != "")
+                            {
+                                if (cell.AddressString.Contains("A"))
+                                {
+                                    //AQUESTS IFS ES PODRIEN TREURE I ARREANDO
+                                    //HP airplane
+                                    if (cell.Text != "HP")
+                                    {
+                                        //Classify it girl
+                                        this.ACclassification.AddModelClassification(cell.Text, "HP");
+                                    }
+                                }
+                                else if (cell.AddressString.Contains("B"))
+                                {
+                                    //NR airplane
+                                    if (cell.Text != "NR")
+                                    {
+                                        this.ACclassification.AddModelClassification(cell.Text, "NR");
+                                    }
+                                }
+                                else if (cell.AddressString.Contains("C"))
+                                {
+                                    //NR+ airplane
+                                    if (cell.Text != "NR+")
+                                    {
+                                        this.ACclassification.AddModelClassification(cell.Text, "NR+");
+                                    }
+                                }
+                                else if (cell.AddressString.Contains("D"))
+                                {
+                                    //NR- airplane
+                                    if (cell.Text != "NR-")
+                                    {
+                                        this.ACclassification.AddModelClassification(cell.Text, "NR-");
+                                    }
+                                }
+                                else if (cell.AddressString.Contains("E"))
+                                {
+                                    //LP airplane
+                                    if (cell.Text != "LP")
+                                    {
+                                        this.ACclassification.AddModelClassification(cell.Text, "LP");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Cell {0} has value '{1}'", cell.AddressString, cell.Text);
+                                }
+
+                            }                 
+
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?");
+                }
             }
         }
     }

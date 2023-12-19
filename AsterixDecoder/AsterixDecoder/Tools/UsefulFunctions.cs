@@ -82,6 +82,7 @@ namespace AsterixDecoder
             }
         }
 
+
         public int[] Bin2Complementary(int[] binaryArray)
         {
             if (binaryArray[0] == 1)
@@ -392,6 +393,12 @@ namespace AsterixDecoder
                 Console.WriteLine("Invalid time format");
                 return null;
             }
+        }
+
+        public DateTime fromToD2Hour(double seconds)
+        {
+            //CONVERTIR DE SEGONS A DATETIME FORMAT :)
+            throw new NotImplementedException();
         }
 
     }

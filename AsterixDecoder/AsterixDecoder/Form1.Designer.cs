@@ -37,6 +37,7 @@ namespace AsterixDecoder
             this.progressLbl = new System.Windows.Forms.Label();
             this.cSVToolboxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importCSVFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importTakeOffsExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trajectoriesSimulatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.simulateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveTrajectoriesInKMLFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +53,7 @@ namespace AsterixDecoder
             this.viewPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.gmap2 = new GMap.NET.WindowsForms.GMapControl();
             this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
-            this.importTakeOffsExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importClassificationACsExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fowardPictureBox)).BeginInit();
@@ -108,19 +109,27 @@ namespace AsterixDecoder
             // 
             this.cSVToolboxToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importCSVFileToolStripMenuItem,
-            this.importTakeOffsExcelFileToolStripMenuItem});
+            this.importTakeOffsExcelFileToolStripMenuItem,
+            this.importClassificationACsExcelFileToolStripMenuItem});
             this.cSVToolboxToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
             this.cSVToolboxToolStripMenuItem.Name = "cSVToolboxToolStripMenuItem";
-            this.cSVToolboxToolStripMenuItem.Size = new System.Drawing.Size(131, 24);
-            this.cSVToolboxToolStripMenuItem.Text = "Initial page";
+            this.cSVToolboxToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
+            this.cSVToolboxToolStripMenuItem.Text = "Load data";
             this.cSVToolboxToolStripMenuItem.Click += new System.EventHandler(this.cSVToolboxToolStripMenuItem_Click);
             // 
             // importCSVFileToolStripMenuItem
             // 
             this.importCSVFileToolStripMenuItem.Name = "importCSVFileToolStripMenuItem";
-            this.importCSVFileToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
-            this.importCSVFileToolStripMenuItem.Text = "Import CSV file";
+            this.importCSVFileToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
+            this.importCSVFileToolStripMenuItem.Text = "Import CSV file decoded";
             this.importCSVFileToolStripMenuItem.Click += new System.EventHandler(this.importCSVFileToolStripMenuItem_Click);
+            // 
+            // importTakeOffsExcelFileToolStripMenuItem
+            // 
+            this.importTakeOffsExcelFileToolStripMenuItem.Name = "importTakeOffsExcelFileToolStripMenuItem";
+            this.importTakeOffsExcelFileToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
+            this.importTakeOffsExcelFileToolStripMenuItem.Text = "Import take offs Excel file";
+            this.importTakeOffsExcelFileToolStripMenuItem.Click += new System.EventHandler(this.importTakeOffsExcelFileToolStripMenuItem_Click);
             // 
             // trajectoriesSimulatorToolStripMenuItem
             // 
@@ -334,12 +343,12 @@ namespace AsterixDecoder
             this.gMapControl1.TabIndex = 13;
             this.gMapControl1.Zoom = 0D;
             // 
-            // importTakeOffsExcelFileToolStripMenuItem
+            // importClassificationACsExcelFileToolStripMenuItem
             // 
-            this.importTakeOffsExcelFileToolStripMenuItem.Name = "importTakeOffsExcelFileToolStripMenuItem";
-            this.importTakeOffsExcelFileToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
-            this.importTakeOffsExcelFileToolStripMenuItem.Text = "Import take offs Excel file";
-            this.importTakeOffsExcelFileToolStripMenuItem.Click += new System.EventHandler(this.importTakeOffsExcelFileToolStripMenuItem_Click);
+            this.importClassificationACsExcelFileToolStripMenuItem.Name = "importClassificationACsExcelFileToolStripMenuItem";
+            this.importClassificationACsExcelFileToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
+            this.importClassificationACsExcelFileToolStripMenuItem.Text = "Import classification ACs Excel file";
+            this.importClassificationACsExcelFileToolStripMenuItem.Click += new System.EventHandler(this.importClassificationACsExcelFileToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -397,6 +406,7 @@ namespace AsterixDecoder
         private System.Windows.Forms.ToolStripMenuItem importCSVFileToolStripMenuItem;
         private GMap.NET.WindowsForms.GMapControl gMapControl1;
         private System.Windows.Forms.ToolStripMenuItem importTakeOffsExcelFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importClassificationACsExcelFileToolStripMenuItem;
     }
 }
 
