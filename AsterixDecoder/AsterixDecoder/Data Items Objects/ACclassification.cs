@@ -8,11 +8,18 @@ namespace AsterixDecoder.Data_Items_Objects
 {
     class ACclassification
     {
+        //LoA
         public Dictionary<string, string> classificationDictionary { get; set; }
+        //Misma SID 06R
+        public Dictionary<string, string> SIDinfoDictionary06R { get; set; }
+        //Misma SID 
+        public Dictionary<string, string> SIDinfoDictionary24L { get; set; }
 
         public ACclassification()
         {
             this.classificationDictionary = new Dictionary<string, string>();
+            this.SIDinfoDictionary06R = new Dictionary<string, string>();
+            this.SIDinfoDictionary24L = new Dictionary<string, string>();
         }
 
 
@@ -28,7 +35,7 @@ namespace AsterixDecoder.Data_Items_Objects
 
         //if bool misma == true -> misma SID
         //if bool misma == false -> distinta SID
-        public int GetMinimumSeparation (string ACmodel, string sucesiva, bool misma)
+        public int GetMinimumSeparation(string ACmodel, string sucesiva, bool misma)
         {
             switch (ACmodel)
             {
@@ -199,6 +206,32 @@ namespace AsterixDecoder.Data_Items_Objects
                         return 9;
                     }
             }
+        }
+
+        public int GetEstelaSeparation(string AC_Cat, string sucesiva)
+        {
+            int res = 0;
+            switch (AC_Cat)
+            {
+                case "SH":
+                    if (sucesiva == "H") { res = 6; }
+                    else if (sucesiva == "M") { res = 7; }
+                    else { res = 8; }
+                    break;
+
+                case "H":
+                    if (sucesiva == "H") { res = 4; }
+                    else if (sucesiva == "M") { res = 5; }
+                    else { res = 6; }
+                    break;
+
+                case "M":
+                    if (sucesiva == "L") { res = 5; }
+                    break;
+
+            }
+
+            return res;
         }
     }
 }

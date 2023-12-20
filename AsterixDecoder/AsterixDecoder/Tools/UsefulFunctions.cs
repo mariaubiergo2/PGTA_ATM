@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using MultiCAT6.Utils;
+
 
 namespace AsterixDecoder
 {
@@ -395,10 +397,29 @@ namespace AsterixDecoder
             }
         }
 
+
         public DateTime fromToD2Hour(double seconds)
         {
             //CONVERTIR DE SEGONS A DATETIME FORMAT :)
-            throw new NotImplementedException();
+
+            string time = TimeSpan.FromSeconds(seconds).ToString(@"hh\:mm\:ss\:fff");
+
+            string format = "HH:mm:ss:fff";
+
+            DateTime dt = DateTime.ParseExact(time, format, null);
+            
+            return dt;
+        }
+
+        public CoordinatesUVH GetStereographic(CoordinatesWGS84 geodesic)
+        {
+            GeoUtils geoUtils = new GeoUtils();
+
+            CoordinatesXYZ geocentric = geoUtils.change_geodesic2geocentric(geodesic);
+            CoordinatesXYZ cartesian = geoUtils.change_geocentric2system_cartesian(geocentric);
+            CoordinatesUVH stereographic = geoUtils.change_system_cartesian2stereographic(cartesian);
+
+            return stereographic;
         }
 
     }

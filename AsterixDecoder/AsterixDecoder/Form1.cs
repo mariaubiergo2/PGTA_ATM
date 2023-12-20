@@ -140,8 +140,7 @@ namespace AsterixDecoder
         //Decoding to CSV
         private void ReportProgess(int percent)
         {
-            progressLbl.Visible = true;
-            progressBar1.Visible = true;
+            
             progressLbl.Text = "Loading... " + Convert.ToString(percent) + " %";
             progressLbl.Refresh();
             progressBar1.Value = percent;
@@ -163,14 +162,22 @@ namespace AsterixDecoder
                 this.aircraftsInfo = new List<ACinfo>();
                 this.aircraftsInfoDic = new Dictionary<string, List<ACinfo>>();
 
-                //first line dissmissed because it is the header 
-                for (int i = 1; i < lines.Length; i++)
+                progressLbl.Visible = true;
+                progressBar1.Visible = true;
+
+                //first line dissmissed because it is the header
+                int len = lines.Length;
+                for (int i = 1; i < len; i++)
                 {
+                    int valProgress = Convert.ToInt32(Convert.ToDouble(i) / len * 100);
+                    ReportProgess(valProgress);
+
                     string[] row = Regex.Split(lines[i], ";");
 
                     ACinfo ac = new ACinfo(row);
 
                     aircraftsInfo.Add(ac);
+                    Console.WriteLine(ac.I161_Tn);
 
                     //If the dictionary already has the key
                     if (this.aircraftsInfoDic.ContainsKey(ac.I161_Tn))
@@ -183,9 +190,7 @@ namespace AsterixDecoder
                         list.Add(ac);
                         this.aircraftsInfoDic.Add(ac.I161_Tn, list);
                     }
-
                 }
-
                 popUpLabel(Convert.ToString(aircraftsInfo.Count));
             }
             
@@ -392,6 +397,7 @@ namespace AsterixDecoder
 
             int num = 0;
             int numlines = elements.Count;
+
             foreach (CAT048 rawElement in elements)
             {
                 CAT048_simulation aircraft = new CAT048_simulation(rawElement);
@@ -769,11 +775,13 @@ namespace AsterixDecoder
                         readCSV(path);
 
                         popUpLabel("⏳ Loaded " + Convert.ToString(aircraftsInfo.Count) + " aircraft items!");
+                        popUpLabel("⏳ Loaded " + Convert.ToString(aircraftsInfoDic.Keys.Count) + " different aircrafts!");
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine(ex);
                 popUpLabel("❌ Something went wrong... Please, try again!");
             }
 
@@ -784,7 +792,7 @@ namespace AsterixDecoder
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx|All Files|*.*";
+                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx";
                 openFileDialog.Title = "Select an Excel File";
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -805,10 +813,8 @@ namespace AsterixDecoder
 
                 // Iterate over all cells in the worsheet
                 int row = 2;
-                string position;
                 while (row <= workSheet.RowCount)
                 {
-                    position = "B" + Convert.ToString(row);
                     Ruta despegue = new Ruta(
                         Convert.ToString(workSheet["A" + Convert.ToString(row)]),
                         Convert.ToString(workSheet["B" + Convert.ToString(row)]),
@@ -827,7 +833,7 @@ namespace AsterixDecoder
                     row++;
                 }
 
-                popUpLabel("Correctly loaded "+ Convert.ToString(despeguesList.Count)+ " take off!");
+                popUpLabel("✅ Correctly loaded " + Convert.ToString(despeguesList.Count)+ " take off!");
                                 
             }
             catch (Exception ex)
@@ -910,6 +916,7 @@ namespace AsterixDecoder
                             }                 
 
                         }
+                        popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.classificationDictionary.Keys.Count) + " aircrafts classifications.");
 
                     }
                 }
@@ -919,6 +926,223 @@ namespace AsterixDecoder
                     popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?");
                 }
             }
+        }
+
+        private void importSID06RToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                try
+                {
+                    openFileDialog.Filter = "Excel Files|*.xls;*.xlsx";
+                    openFileDialog.Title = "Select an Excel File";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string selectedFilePath = openFileDialog.FileName;
+
+                        WorkBook workBook = WorkBook.Load(selectedFilePath);
+                        WorkSheet workSheet = workBook.WorkSheets.First();
+
+                        // Iterate over all cells in the worsheet
+                        foreach (var cell in workSheet)
+                        {
+                            if (cell.Text != "")
+                            {
+                                if (cell.AddressString.Contains("A"))
+                                {
+                                    if (cell.Text != "Misma_SID_G1")
+                                    {
+                                        this.ACclassification.SIDinfoDictionary06R.Add(cell.Text, "Misma_SID_G1");
+                                    }
+                                }
+                                else if (cell.AddressString.Contains("B"))
+                                {
+                                    if (cell.Text != "Misma_SID_G2")
+                                    {
+                                        this.ACclassification.SIDinfoDictionary06R.Add(cell.Text, "Misma_SID_G2");
+                                    }
+                                }
+                                else if (cell.AddressString.Contains("C"))
+                                {
+                                    if (cell.Text != "Misma_SID_G3")
+                                    {
+                                        this.ACclassification.SIDinfoDictionary06R.Add(cell.Text, "Misma_SID_G3");
+                                    }
+                                }                                
+                                else
+                                {
+                                    Console.WriteLine("Cell {0} has value '{1}'", cell.AddressString, cell.Text);
+                                }
+
+                            }
+                        }
+
+                        popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.SIDinfoDictionary06R.Keys.Count) + " SIDs 06R.");
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?");
+                }
+            }
+        }
+
+        private void importSID24LToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                try
+                {
+                    openFileDialog.Filter = "Excel Files|*.xls;*.xlsx";
+                    openFileDialog.Title = "Select an Excel File";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string selectedFilePath = openFileDialog.FileName;
+
+                        WorkBook workBook = WorkBook.Load(selectedFilePath);
+                        WorkSheet workSheet = workBook.WorkSheets.First();
+
+                        // Iterate over all cells in the worsheet
+                        foreach (var cell in workSheet)
+                        {
+                            if (cell.Text != "")
+                            {
+                                if (cell.AddressString.Contains("A"))
+                                {
+                                    if (cell.Text != "Misma_SID_G1")
+                                    {
+                                        this.ACclassification.SIDinfoDictionary24L.Add(cell.Text, "Misma_SID_G1");
+                                    }
+                                }
+                                else if (cell.AddressString.Contains("B"))
+                                {
+                                    if (cell.Text != "Misma_SID_G2")
+                                    {
+                                        this.ACclassification.SIDinfoDictionary24L.Add(cell.Text, "Misma_SID_G2");
+                                    }
+                                }
+                                else if (cell.AddressString.Contains("C"))
+                                {
+                                    if (cell.Text != "Misma_SID_G3")
+                                    {
+                                        this.ACclassification.SIDinfoDictionary24L.Add(cell.Text, "Misma_SID_G3");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Cell {0} has value '{1}'", cell.AddressString, cell.Text);
+                                }
+                            }
+                        }
+
+                        popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.SIDinfoDictionary24L.Keys.Count) + " SIDs 24L.");
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?");
+                }
+            }
+        }
+
+        private void computeCompatibilitiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Compute if the take offs are compatible here
+            int i = 0;
+            while(i < despeguesList.Count - 1)
+            {
+                //1. computeDistanceBetweenNextAC(despeguesList[i], despeguesList[i + 1])
+                double realSeparation = 20; //NM
+
+                //2. passem la distancia i mirem si compleix la minima per radar
+                computeRadarCompatibility(realSeparation);
+
+                //3. passem la distancia i mirem si es compatible per les esteles
+                computeEstelaCompatibility(despeguesList[i], despeguesList[i + 1], realSeparation);
+
+                //4. passem la distancia i mirem si es compleix per la LoA
+                computeLoACompatibility(despeguesList[i], despeguesList[i + 1], realSeparation);
+
+                i++;
+            }
+        }
+
+        private void computeRadarCompatibility (double realSeparation)
+        {
+            //Separacion minima radar = 3NM
+            if (realSeparation >= 3.0)
+            {
+                //Compatible segons la minima del radar
+            }
+            else
+            {
+                //No compatible segons el radar
+            }
+
+
+            //ANOTHER WAY TO MAKE STATISTICS LATER:
+            double difference = realSeparation - 3.0;
+            if (difference >= 0)
+            {
+                //The separation is bigger
+            }
+            else
+            {
+                //The separation is not bigger than 3NM and the difference is abs(difference)
+            }
+        }
+
+        private void computeEstelaCompatibility (Ruta first, Ruta second, double realSeparation)
+        {
+            //Despeguen pel mateix lloc?
+            //S'ha de mirar akgo mes de la ruta?!?!??!?!
+            if (first.PistaDesp == second.PistaDesp)
+            {
+                double minSeparation = 0.0; //Separacion minima
+                string sucesiva = second.Estela;
+                switch (first.Estela)
+                {
+                    case "Super Pesada":
+                        if (sucesiva == "Pesada") { minSeparation = 6.0; }
+                        else if (sucesiva == "Media") { minSeparation = 7.0; }
+                        else { minSeparation = 8.0; }
+                        break;
+
+                    case "Pesada":
+                        if (sucesiva == "Pesada") { minSeparation = 4.0; }
+                        else if (sucesiva == "Media") { minSeparation = 5.0; }
+                        else { minSeparation = 6.0; }
+                        break;
+
+                    case "Mediana":
+                        if (sucesiva == "Ligera") { minSeparation = 5.0; }
+                        break;
+                }
+                Console.WriteLine("Minimum separation due Estela:");
+                Console.WriteLine(minSeparation);
+
+                if (realSeparation >= minSeparation)
+                {
+                    //Todo gucci, esteles compatibles
+                }
+                else
+                {
+                    //Esteles no compatibles
+                }
+            }
+        }
+
+        private void computeLoACompatibility(Ruta first, Ruta second, double realDistance)
+        {
+
+
+
         }
     }
 }

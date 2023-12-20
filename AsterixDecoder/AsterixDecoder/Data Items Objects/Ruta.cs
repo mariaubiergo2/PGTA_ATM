@@ -10,12 +10,12 @@ namespace AsterixDecoder.Data_Items_Objects
     {
         public string id { get; set; }
         public string indicativo { get; set; }
-        private string HoraDespegue { get; set; }
-        private string RutaSACTA { get; set; }
-        private string TipoAeronave { get;  set; }
-        private string Estela { get; set; }
-        private string ProcDesp { get; set; }
-        private string PistaDesp { get; set; }
+        public string HoraDespegue { get; set; }
+        public string RutaSACTA { get; set; }
+        public string TipoAeronave { get;  set; }
+        public string Estela { get; set; }
+        public string ProcDesp { get; set; }
+        public string PistaDesp { get; set; }
 
         public Ruta()
         {
@@ -33,11 +33,11 @@ namespace AsterixDecoder.Data_Items_Objects
                 this.Estela = Estela;
                 this.ProcDesp = ProcDesp;
                 this.PistaDesp = PistaDesp;
-            }
-
-            
+            }         
 
         }
+
+
 
         
     }
