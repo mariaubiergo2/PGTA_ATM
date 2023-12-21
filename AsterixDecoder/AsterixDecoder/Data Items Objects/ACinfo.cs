@@ -60,13 +60,18 @@ namespace AsterixDecoder.Data_Items_Objects
                     this.I240_TId = row[7]; // if (this.I240_TId == "") -> Guiarnos por el csv
 
                     CoordinatesWGS84 geodesic_coordinates = new CoordinatesWGS84(lat * Math.PI / 180, longi * Math.PI / 180, height);
-                    Console.WriteLine(geodesic_coordinates.Lat);
-                    Console.WriteLine(geodesic_coordinates.Lon);
-                    Console.WriteLine("------");
+                    //double dist = useful.ComputeRealDistances(-7137.25276039452, 21467.1511090893, -14382.3765610545, 22955.388609246);
+
+                    //Console.WriteLine(geodesic_coordinates.Lat*180/Math.PI);
+                    //Console.WriteLine(geodesic_coordinates.Lon*180/Math.PI);
+                    //Console.WriteLine("------");
 
                     CoordinatesUVH stereo_coord = useful.GetStereographic(geodesic_coordinates);
-                    Console.WriteLine(stereo_coord);
-                    Console.WriteLine("------");
+                    //Console.WriteLine(stereo_coord.U);
+                    //Console.WriteLine(stereo_coord.V);
+                    ////Console.WriteLine(dist);
+                    
+                    //Console.WriteLine("------");
 
                     this.I250_BDS40_BP = GetDoubleValue(row[8]);
                     this.I250_BDS50_RA = GetDoubleValue(row[9]);

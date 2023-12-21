@@ -273,6 +273,7 @@
   <ItemGroup>
     <Compile Include="Data Items Objects\ACclassification.cs" />
     <Compile Include="Data Items Objects\ACinfo.cs" />
+    <Compile Include="Data Items Objects\AC_pair.cs" />
     <Compile Include="Data Items Objects\CAT048.cs" />
     <Compile Include="Data Items Objects\CAT048_simulation.cs" />
     <Compile Include="Data Items Objects\Ruta.cs" />

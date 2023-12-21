@@ -39,7 +39,10 @@ namespace AsterixDecoder
             this.importCSVFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importTakeOffsExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importClassificationACsExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importSID06RToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importSID24LToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trajectoriesSimulatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.computeCompatibilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.simulateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveTrajectoriesInKMLFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -54,9 +57,6 @@ namespace AsterixDecoder
             this.viewPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.gmap2 = new GMap.NET.WindowsForms.GMapControl();
             this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
-            this.importSID06RToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importSID24LToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.computeCompatibilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fowardPictureBox)).BeginInit();
@@ -85,7 +85,7 @@ namespace AsterixDecoder
             this.title.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.title.Location = new System.Drawing.Point(1249, 476);
             this.title.Name = "title";
-            this.title.Size = new System.Drawing.Size(46, 17);
+            this.title.Size = new System.Drawing.Size(44, 16);
             this.title.TabIndex = 5;
             this.title.Text = "label1";
             // 
@@ -118,7 +118,7 @@ namespace AsterixDecoder
             this.importSID24LToolStripMenuItem});
             this.cSVToolboxToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
             this.cSVToolboxToolStripMenuItem.Name = "cSVToolboxToolStripMenuItem";
-            this.cSVToolboxToolStripMenuItem.Size = new System.Drawing.Size(104, 26);
+            this.cSVToolboxToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
             this.cSVToolboxToolStripMenuItem.Text = "Load data";
             this.cSVToolboxToolStripMenuItem.Click += new System.EventHandler(this.cSVToolboxToolStripMenuItem_Click);
             // 
@@ -143,6 +143,20 @@ namespace AsterixDecoder
             this.importClassificationACsExcelFileToolStripMenuItem.Text = "Import classification ACs Excel file";
             this.importClassificationACsExcelFileToolStripMenuItem.Click += new System.EventHandler(this.importClassificationACsExcelFileToolStripMenuItem_Click);
             // 
+            // importSID06RToolStripMenuItem
+            // 
+            this.importSID06RToolStripMenuItem.Name = "importSID06RToolStripMenuItem";
+            this.importSID06RToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
+            this.importSID06RToolStripMenuItem.Text = "Import SID 06R";
+            this.importSID06RToolStripMenuItem.Click += new System.EventHandler(this.importSID06RToolStripMenuItem_Click);
+            // 
+            // importSID24LToolStripMenuItem
+            // 
+            this.importSID24LToolStripMenuItem.Name = "importSID24LToolStripMenuItem";
+            this.importSID24LToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
+            this.importSID24LToolStripMenuItem.Text = "Import SID 24L";
+            this.importSID24LToolStripMenuItem.Click += new System.EventHandler(this.importSID24LToolStripMenuItem_Click);
+            // 
             // trajectoriesSimulatorToolStripMenuItem
             // 
             this.trajectoriesSimulatorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -151,9 +165,16 @@ namespace AsterixDecoder
             this.saveTrajectoriesInKMLFormatToolStripMenuItem});
             this.trajectoriesSimulatorToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
             this.trajectoriesSimulatorToolStripMenuItem.Name = "trajectoriesSimulatorToolStripMenuItem";
-            this.trajectoriesSimulatorToolStripMenuItem.Size = new System.Drawing.Size(131, 26);
+            this.trajectoriesSimulatorToolStripMenuItem.Size = new System.Drawing.Size(131, 24);
             this.trajectoriesSimulatorToolStripMenuItem.Text = "Analyse data";
             this.trajectoriesSimulatorToolStripMenuItem.Click += new System.EventHandler(this.trajectoriesSimulatorToolStripMenuItem_Click);
+            // 
+            // computeCompatibilitiesToolStripMenuItem
+            // 
+            this.computeCompatibilitiesToolStripMenuItem.Name = "computeCompatibilitiesToolStripMenuItem";
+            this.computeCompatibilitiesToolStripMenuItem.Size = new System.Drawing.Size(371, 26);
+            this.computeCompatibilitiesToolStripMenuItem.Text = "Compute compatibilities";
+            this.computeCompatibilitiesToolStripMenuItem.Click += new System.EventHandler(this.computeCompatibilitiesToolStripMenuItem_Click);
             // 
             // simulateToolStripMenuItem
             // 
@@ -179,7 +200,7 @@ namespace AsterixDecoder
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1560, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(1560, 28);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -193,7 +214,7 @@ namespace AsterixDecoder
             this.infoLbl.Font = new System.Drawing.Font("Cascadia Code", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.infoLbl.Location = new System.Drawing.Point(13, 541);
             this.infoLbl.Name = "infoLbl";
-            this.infoLbl.Size = new System.Drawing.Size(78, 25);
+            this.infoLbl.Size = new System.Drawing.Size(76, 24);
             this.infoLbl.TabIndex = 12;
             this.infoLbl.Text = "label1";
             // 
@@ -355,27 +376,7 @@ namespace AsterixDecoder
             this.gMapControl1.Size = new System.Drawing.Size(1560, 427);
             this.gMapControl1.TabIndex = 13;
             this.gMapControl1.Zoom = 0D;
-            // 
-            // importSID06RToolStripMenuItem
-            // 
-            this.importSID06RToolStripMenuItem.Name = "importSID06RToolStripMenuItem";
-            this.importSID06RToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
-            this.importSID06RToolStripMenuItem.Text = "Import SID 06R";
-            this.importSID06RToolStripMenuItem.Click += new System.EventHandler(this.importSID06RToolStripMenuItem_Click);
-            // 
-            // importSID24LToolStripMenuItem
-            // 
-            this.importSID24LToolStripMenuItem.Name = "importSID24LToolStripMenuItem";
-            this.importSID24LToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
-            this.importSID24LToolStripMenuItem.Text = "Import SID 24L";
-            this.importSID24LToolStripMenuItem.Click += new System.EventHandler(this.importSID24LToolStripMenuItem_Click);
-            // 
-            // computeCompatibilitiesToolStripMenuItem
-            // 
-            this.computeCompatibilitiesToolStripMenuItem.Name = "computeCompatibilitiesToolStripMenuItem";
-            this.computeCompatibilitiesToolStripMenuItem.Size = new System.Drawing.Size(371, 26);
-            this.computeCompatibilitiesToolStripMenuItem.Text = "Compute compatibilities";
-            this.computeCompatibilitiesToolStripMenuItem.Click += new System.EventHandler(this.computeCompatibilitiesToolStripMenuItem_Click);
+            this.gMapControl1.Load += new System.EventHandler(this.gMapControl1_Load);
             // 
             // MainWindow
             // 

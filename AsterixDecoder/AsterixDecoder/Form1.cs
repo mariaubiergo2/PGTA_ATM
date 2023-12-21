@@ -192,6 +192,7 @@ namespace AsterixDecoder
                     }
                 }
                 popUpLabel(Convert.ToString(aircraftsInfo.Count));
+
             }
             
             
@@ -829,7 +830,9 @@ namespace AsterixDecoder
                     if (despegue.id != null)
                     {                        
                         this.despeguesList.Add(despegue);
+                        this.ACclassification.estelaDictionary.Add(despegue.id, despegue.Estela);
                     }
+
                     row++;
                 }
 
@@ -838,7 +841,7 @@ namespace AsterixDecoder
             }
             catch (Exception ex)
             {
-                popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?");
+                popUpLabel("❌ Something went wrong... Is the EXCEL file opened somewhere else?");
             }
 
         }
@@ -949,25 +952,27 @@ namespace AsterixDecoder
                         {
                             if (cell.Text != "")
                             {
+                                string res = usefulFunctions.RemoveEnd(cell.Text, 2);
+
                                 if (cell.AddressString.Contains("A"))
                                 {
                                     if (cell.Text != "Misma_SID_G1")
                                     {
-                                        this.ACclassification.SIDinfoDictionary06R.Add(cell.Text, "Misma_SID_G1");
+                                        this.ACclassification.SIDDictionary.Add(res, "G1_06R");
                                     }
                                 }
                                 else if (cell.AddressString.Contains("B"))
                                 {
                                     if (cell.Text != "Misma_SID_G2")
                                     {
-                                        this.ACclassification.SIDinfoDictionary06R.Add(cell.Text, "Misma_SID_G2");
+                                        this.ACclassification.SIDDictionary.Add(res, "G2_06R");
                                     }
                                 }
                                 else if (cell.AddressString.Contains("C"))
                                 {
                                     if (cell.Text != "Misma_SID_G3")
                                     {
-                                        this.ACclassification.SIDinfoDictionary06R.Add(cell.Text, "Misma_SID_G3");
+                                        this.ACclassification.SIDDictionary.Add(res, "G3_06R");
                                     }
                                 }                                
                                 else
@@ -978,7 +983,7 @@ namespace AsterixDecoder
                             }
                         }
 
-                        popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.SIDinfoDictionary06R.Keys.Count) + " SIDs 06R.");
+                        popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.SIDDictionary.Keys.Count) + " total SIDs.");
 
                     }
                 }
@@ -1011,25 +1016,27 @@ namespace AsterixDecoder
                         {
                             if (cell.Text != "")
                             {
+                                string res = usefulFunctions.RemoveEnd(cell.Text, 2);
+
                                 if (cell.AddressString.Contains("A"))
                                 {
                                     if (cell.Text != "Misma_SID_G1")
                                     {
-                                        this.ACclassification.SIDinfoDictionary24L.Add(cell.Text, "Misma_SID_G1");
+                                        this.ACclassification.SIDDictionary.Add(res, "G1_24L");
                                     }
                                 }
                                 else if (cell.AddressString.Contains("B"))
                                 {
                                     if (cell.Text != "Misma_SID_G2")
                                     {
-                                        this.ACclassification.SIDinfoDictionary24L.Add(cell.Text, "Misma_SID_G2");
+                                        this.ACclassification.SIDDictionary.Add(res, "G2_24L");
                                     }
                                 }
                                 else if (cell.AddressString.Contains("C"))
                                 {
                                     if (cell.Text != "Misma_SID_G3")
                                     {
-                                        this.ACclassification.SIDinfoDictionary24L.Add(cell.Text, "Misma_SID_G3");
+                                        this.ACclassification.SIDDictionary.Add(res, "G3_24L");
                                     }
                                 }
                                 else
@@ -1039,7 +1046,7 @@ namespace AsterixDecoder
                             }
                         }
 
-                        popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.SIDinfoDictionary24L.Keys.Count) + " SIDs 24L.");
+                        popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.SIDDictionary.Keys.Count) + " total SIDs.");
 
                     }
                 }
@@ -1073,6 +1080,10 @@ namespace AsterixDecoder
             }
         }
 
+
+
+
+
         private void computeRadarCompatibility (double realSeparation)
         {
             //Separacion minima radar = 3NM
@@ -1098,13 +1109,14 @@ namespace AsterixDecoder
             }
         }
 
-        private void computeEstelaCompatibility (Ruta first, Ruta second, double realSeparation)
+        private void computeEstelaCompatibility(Ruta first, Ruta second, double realSeparation)
         {
+            double minSeparation = 0.0; //Separacion minima
+
             //Despeguen pel mateix lloc?
             //S'ha de mirar akgo mes de la ruta?!?!??!?!
             if (first.PistaDesp == second.PistaDesp)
             {
-                double minSeparation = 0.0; //Separacion minima
                 string sucesiva = second.Estela;
                 switch (first.Estela)
                 {
@@ -1138,10 +1150,16 @@ namespace AsterixDecoder
             }
         }
 
+
         private void computeLoACompatibility(Ruta first, Ruta second, double realDistance)
         {
 
 
+
+        }
+
+        private void gMapControl1_Load(object sender, EventArgs e)
+        {
 
         }
     }

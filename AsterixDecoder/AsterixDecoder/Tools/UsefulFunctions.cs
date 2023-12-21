@@ -415,11 +415,37 @@ namespace AsterixDecoder
         {
             GeoUtils geoUtils = new GeoUtils();
 
+            //Stablish the center of projection
+            CoordinatesWGS84 tang_point = new CoordinatesWGS84(41.115711 * Math.PI / 180, 1.692528 * Math.PI / 180, 0);
+            CoordinatesWGS84 centerProjection = geoUtils.setCenterProjection(tang_point);
+            
+            //Coordinates transformations
             CoordinatesXYZ geocentric = geoUtils.change_geodesic2geocentric(geodesic);
             CoordinatesXYZ cartesian = geoUtils.change_geocentric2system_cartesian(geocentric);
             CoordinatesUVH stereographic = geoUtils.change_system_cartesian2stereographic(cartesian);
 
             return stereographic;
+        }
+
+        public double ComputeRealDistances( double x1, double y1, double x2, double y2)
+        {
+            double dx = x1 - x2;
+            double dy = y1 - y2;
+            double dist = Math.Sqrt(dx*dx + dy*dy); //distance in meters
+
+            dist = Math.Round(dist/1852,2); //conversion to NM
+            
+            return dist;
+        }
+
+        public String RemoveEnd(String str, int len)
+        {
+            if (str.Length < len)
+            {
+                return string.Empty;
+            }
+
+            return str.Remove(str.Length - len);
         }
 
     }
