@@ -1082,8 +1082,6 @@ namespace AsterixDecoder
             //Compute if the take offs are compatible here
             int i = 0;
 
-            //int i = 2;
-            //while (i < 3)
             while(i < despeguesList.Count - 1)
             {
                 //1. computeDistanceBetweenNextAC(despeguesList[i], despeguesList[i + 1])
@@ -1108,9 +1106,7 @@ namespace AsterixDecoder
                     {
                         found1 = usefulFunctions.isDateBetween((info1[initialACinfoPosition1].I140_ToD), (info1[initialACinfoPosition1].I140_ToD).AddSeconds(3), startHour);
                     }
-
                 }
-
 
                 if (found1)
                 {
@@ -1129,22 +1125,51 @@ namespace AsterixDecoder
                     if (found2)
                     {
                         //ARA val la pena comparar
-                        ACinfo startingPoint1 = info1[initialACinfoPosition1];
+                        ACinfo startingPoint1;
+                        ACinfo startingPoint2;                        
 
-                        ACinfo startingPoint2 = info2[initialACinfoPosition2];
+                        int len1 = info1.Count;
+                        int len2 = info2.Count;
 
-                        AC_pair pair = this.ACclassification.SetACpairs(despegue1, despegue2, startingPoint1, startingPoint2);
+                        bool worthit = true;
 
-                        if (this.pairsDictionary.ContainsKey(despegue1.indicativo))
+                        while (initialACinfoPosition1 < len1 && initialACinfoPosition2 < len2 && worthit)
                         {
+                            //Comparem:
+                            startingPoint1 = info1[initialACinfoPosition1]; //Busquem partint des de llistat1
+                            startingPoint2 = info2[initialACinfoPosition2];
 
-                        }
-                        else
-                        {
-                            this.pairsDictionary.Add(despegue1.indicativo, pair);
-                        }
+                            //saber si entre startingPoint1 i startingPoint2 hi ha una diferencia de +-2s
+                            bool inInterval = usefulFunctions.differenceTimesInInterval(startingPoint1.I140_ToD, startingPoint2.I140_ToD, 2);
+                            
+                            if (inInterval)
+                            {
+                                AC_pair pair = this.ACclassification.SetACpairs(despegue1, despegue2, startingPoint1, startingPoint2);
 
-                        this.pairsList.Add(pair);
+                                //Generem un diccionari per fer estadístiques 
+                                if (this.pairsDictionary.ContainsKey(despegue1.indicativo))
+                                {
+
+                                }
+                                else
+                                {
+                                    this.pairsDictionary.Add(despegue1.indicativo, pair);
+                                }
+
+                                //Llistat per fer el CSV
+                                this.pairsList.Add(pair);
+
+                                //LLAVORS PASSAR AL SEGUENT
+                                initialACinfoPosition1++;
+                                initialACinfoPosition2++;
+
+                            }
+                            else
+                            {
+                                initialACinfoPosition2++;
+                            }
+
+                        }                      
                         
                     }
                     else
@@ -1265,7 +1290,7 @@ namespace AsterixDecoder
                         csvWriter.WriteRecords<AC_pair>(pairsList);
                     }
 
-                    if (elements.Count != 0)
+                    if (pairsList.Count != 0)
                     {
                         popUpLabel("✅ Your file is correctly saved!");
                     }
@@ -1282,6 +1307,19 @@ namespace AsterixDecoder
             }
 
 
+        }
+
+        private void tRIALSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string d1 = "05/02/2023 14:10:20";
+            string d2 = "05/02/2023 14:10:19";
+
+            DateTime dateTime1 = DateTime.Parse(d1);
+            DateTime dateTime2 = DateTime.Parse(d2);
+
+
+            bool c = usefulFunctions.differenceTimesInInterval(dateTime1, dateTime2, 2);
+            Console.WriteLine(c);
         }
     }
 }

@@ -397,7 +397,6 @@ namespace AsterixDecoder
             }
         }
 
-
         public DateTime fromToD2Hour(double seconds)
         {
             //CONVERTIR DE SEGONS A DATETIME FORMAT :)
@@ -412,6 +411,20 @@ namespace AsterixDecoder
             DateTime dt = DateTime.ParseExact(dateTimeString, format, null);
             
             return dt;
+        }
+
+        public bool differenceTimesInInterval(DateTime dateTime1, DateTime dateTime2, int interval)
+        {
+            TimeSpan diff = (dateTime1 - dateTime2).Duration();
+
+            if (diff.TotalSeconds > interval)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public CoordinatesUVH GetStereographic(CoordinatesWGS84 geodesic)

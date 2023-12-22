@@ -43,8 +43,7 @@ namespace AsterixDecoder
             this.importSID24LToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trajectoriesSimulatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.computeCompatibilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.simulateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveTrajectoriesInKMLFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveCompatibilitiesInCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.infoLbl = new System.Windows.Forms.Label();
@@ -57,7 +56,8 @@ namespace AsterixDecoder
             this.viewPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.gmap2 = new GMap.NET.WindowsForms.GMapControl();
             this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
-            this.saveCompatibilitiesInCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importCompatibilitiesCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tRIALSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fowardPictureBox)).BeginInit();
@@ -163,8 +163,8 @@ namespace AsterixDecoder
             this.trajectoriesSimulatorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.computeCompatibilitiesToolStripMenuItem,
             this.saveCompatibilitiesInCSVToolStripMenuItem,
-            this.simulateToolStripMenuItem,
-            this.saveTrajectoriesInKMLFormatToolStripMenuItem});
+            this.importCompatibilitiesCSVToolStripMenuItem,
+            this.tRIALSToolStripMenuItem});
             this.trajectoriesSimulatorToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
             this.trajectoriesSimulatorToolStripMenuItem.Name = "trajectoriesSimulatorToolStripMenuItem";
             this.trajectoriesSimulatorToolStripMenuItem.Size = new System.Drawing.Size(131, 24);
@@ -174,23 +174,16 @@ namespace AsterixDecoder
             // computeCompatibilitiesToolStripMenuItem
             // 
             this.computeCompatibilitiesToolStripMenuItem.Name = "computeCompatibilitiesToolStripMenuItem";
-            this.computeCompatibilitiesToolStripMenuItem.Size = new System.Drawing.Size(371, 26);
+            this.computeCompatibilitiesToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
             this.computeCompatibilitiesToolStripMenuItem.Text = "Compute compatibilities";
             this.computeCompatibilitiesToolStripMenuItem.Click += new System.EventHandler(this.computeCompatibilitiesToolStripMenuItem_Click);
             // 
-            // simulateToolStripMenuItem
+            // saveCompatibilitiesInCSVToolStripMenuItem
             // 
-            this.simulateToolStripMenuItem.Name = "simulateToolStripMenuItem";
-            this.simulateToolStripMenuItem.Size = new System.Drawing.Size(371, 26);
-            this.simulateToolStripMenuItem.Text = "Simulate";
-            this.simulateToolStripMenuItem.Click += new System.EventHandler(this.simulateToolStripMenuItem_Click);
-            // 
-            // saveTrajectoriesInKMLFormatToolStripMenuItem
-            // 
-            this.saveTrajectoriesInKMLFormatToolStripMenuItem.Name = "saveTrajectoriesInKMLFormatToolStripMenuItem";
-            this.saveTrajectoriesInKMLFormatToolStripMenuItem.Size = new System.Drawing.Size(371, 26);
-            this.saveTrajectoriesInKMLFormatToolStripMenuItem.Text = "Save trajectories in KML format";
-            this.saveTrajectoriesInKMLFormatToolStripMenuItem.Click += new System.EventHandler(this.saveTrajectoriesInKMLFormatToolStripMenuItem_Click);
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Name = "saveCompatibilitiesInCSVToolStripMenuItem";
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Text = "Save compatibilities in CSV";
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Click += new System.EventHandler(this.saveCompatibilitiesInCSVToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -380,12 +373,18 @@ namespace AsterixDecoder
             this.gMapControl1.Zoom = 0D;
             this.gMapControl1.Load += new System.EventHandler(this.gMapControl1_Load);
             // 
-            // saveCompatibilitiesInCSVToolStripMenuItem
+            // importCompatibilitiesCSVToolStripMenuItem
             // 
-            this.saveCompatibilitiesInCSVToolStripMenuItem.Name = "saveCompatibilitiesInCSVToolStripMenuItem";
-            this.saveCompatibilitiesInCSVToolStripMenuItem.Size = new System.Drawing.Size(371, 26);
-            this.saveCompatibilitiesInCSVToolStripMenuItem.Text = "Save compatibilities in CSV";
-            this.saveCompatibilitiesInCSVToolStripMenuItem.Click += new System.EventHandler(this.saveCompatibilitiesInCSVToolStripMenuItem_Click);
+            this.importCompatibilitiesCSVToolStripMenuItem.Name = "importCompatibilitiesCSVToolStripMenuItem";
+            this.importCompatibilitiesCSVToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
+            this.importCompatibilitiesCSVToolStripMenuItem.Text = "Import compatibilities CSV";
+            // 
+            // tRIALSToolStripMenuItem
+            // 
+            this.tRIALSToolStripMenuItem.Name = "tRIALSToolStripMenuItem";
+            this.tRIALSToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
+            this.tRIALSToolStripMenuItem.Text = "TRIALS";
+            this.tRIALSToolStripMenuItem.Click += new System.EventHandler(this.tRIALSToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -429,7 +428,6 @@ namespace AsterixDecoder
         private System.Windows.Forms.ToolStripMenuItem trajectoriesSimulatorToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private GMap.NET.WindowsForms.GMapControl gmap2;
-        private System.Windows.Forms.ToolStripMenuItem saveTrajectoriesInKMLFormatToolStripMenuItem;
         public System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label infoLbl;
         private System.Windows.Forms.TextBox hourBox;
@@ -439,7 +437,6 @@ namespace AsterixDecoder
         private System.Windows.Forms.ComboBox speedDecisionBox;
         private System.Windows.Forms.ComboBox IsMapas;
         private System.Windows.Forms.FlowLayoutPanel viewPanel;
-        private System.Windows.Forms.ToolStripMenuItem simulateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importCSVFileToolStripMenuItem;
         private GMap.NET.WindowsForms.GMapControl gMapControl1;
         private System.Windows.Forms.ToolStripMenuItem importTakeOffsExcelFileToolStripMenuItem;
@@ -448,6 +445,8 @@ namespace AsterixDecoder
         private System.Windows.Forms.ToolStripMenuItem importSID24LToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem computeCompatibilitiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveCompatibilitiesInCSVToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importCompatibilitiesCSVToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tRIALSToolStripMenuItem;
     }
 }
 
