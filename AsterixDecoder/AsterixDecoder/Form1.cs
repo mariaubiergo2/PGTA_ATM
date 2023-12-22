@@ -11,6 +11,8 @@ using GMap.NET.WindowsForms;
 using System.Xml;
 using AsterixDecoder.Data_Items_Objects;
 using IronXL;
+using CsvHelper;
+using System.Globalization;
 
 namespace AsterixDecoder
 {
@@ -32,6 +34,8 @@ namespace AsterixDecoder
 
         //Diccionari per fer estadistiques
         Dictionary<string, AC_pair> pairsDictionary;
+
+        List<AC_pair> pairsList;
 
 
         //Simulation
@@ -1073,6 +1077,7 @@ namespace AsterixDecoder
         private void computeCompatibilitiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.pairsDictionary = new Dictionary<string, AC_pair>();
+            this.pairsList = new List<AC_pair>();
 
             //Compute if the take offs are compatible here
             int i = 0;
@@ -1138,6 +1143,8 @@ namespace AsterixDecoder
                         {
                             this.pairsDictionary.Add(despegue1.indicativo, pair);
                         }
+
+                        this.pairsList.Add(pair);
                         
                     }
                     else
@@ -1232,6 +1239,48 @@ namespace AsterixDecoder
 
         private void gMapControl1_Load(object sender, EventArgs e)
         {
+
+        }
+
+        private void saveCompatibilitiesInCSVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            // Set initial directory and file name filters if needed
+            saveFileDialog.InitialDirectory = this.projectDirectory;
+            saveFileDialog.Filter = "CSV files (*.csv)|*.csv";
+
+            try
+            {
+                // Show the dialog and check if the user clicked OK
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Get the selected file name
+                    string filePath = saveFileDialog.FileName;
+
+                    // Your existing code to write to CSV
+                    using (var writer = new StreamWriter(filePath))
+                    using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csvWriter.WriteRecords<AC_pair>(pairsList);
+                    }
+
+                    if (elements.Count != 0)
+                    {
+                        popUpLabel("✅ Your file is correctly saved!");
+                    }
+                    else
+                    {
+                        popUpLabel("✅ Your file is correctly saved! Yet is empty.");
+                    }
+
+                }
+            }
+            catch
+            {
+                popUpLabel("❌ Something went wrong... Please, try again!");
+            }
+
 
         }
     }

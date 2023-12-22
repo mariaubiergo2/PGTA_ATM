@@ -36,8 +36,8 @@ namespace AsterixDecoder
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.progressLbl = new System.Windows.Forms.Label();
             this.cSVToolboxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importCSVFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importTakeOffsExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importCSVFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importClassificationACsExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importSID06RToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importSID24LToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,6 +57,7 @@ namespace AsterixDecoder
             this.viewPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.gmap2 = new GMap.NET.WindowsForms.GMapControl();
             this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
+            this.saveCompatibilitiesInCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fowardPictureBox)).BeginInit();
@@ -122,19 +123,19 @@ namespace AsterixDecoder
             this.cSVToolboxToolStripMenuItem.Text = "Load data";
             this.cSVToolboxToolStripMenuItem.Click += new System.EventHandler(this.cSVToolboxToolStripMenuItem_Click);
             // 
-            // importCSVFileToolStripMenuItem
-            // 
-            this.importCSVFileToolStripMenuItem.Name = "importCSVFileToolStripMenuItem";
-            this.importCSVFileToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
-            this.importCSVFileToolStripMenuItem.Text = "Import CSV file decoded";
-            this.importCSVFileToolStripMenuItem.Click += new System.EventHandler(this.importCSVFileToolStripMenuItem_Click);
-            // 
             // importTakeOffsExcelFileToolStripMenuItem
             // 
             this.importTakeOffsExcelFileToolStripMenuItem.Name = "importTakeOffsExcelFileToolStripMenuItem";
             this.importTakeOffsExcelFileToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
             this.importTakeOffsExcelFileToolStripMenuItem.Text = "Import take off Excel file";
             this.importTakeOffsExcelFileToolStripMenuItem.Click += new System.EventHandler(this.importTakeOffsExcelFileToolStripMenuItem_Click);
+            // 
+            // importCSVFileToolStripMenuItem
+            // 
+            this.importCSVFileToolStripMenuItem.Name = "importCSVFileToolStripMenuItem";
+            this.importCSVFileToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
+            this.importCSVFileToolStripMenuItem.Text = "Import CSV file decoded";
+            this.importCSVFileToolStripMenuItem.Click += new System.EventHandler(this.importCSVFileToolStripMenuItem_Click);
             // 
             // importClassificationACsExcelFileToolStripMenuItem
             // 
@@ -161,6 +162,7 @@ namespace AsterixDecoder
             // 
             this.trajectoriesSimulatorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.computeCompatibilitiesToolStripMenuItem,
+            this.saveCompatibilitiesInCSVToolStripMenuItem,
             this.simulateToolStripMenuItem,
             this.saveTrajectoriesInKMLFormatToolStripMenuItem});
             this.trajectoriesSimulatorToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
@@ -378,6 +380,13 @@ namespace AsterixDecoder
             this.gMapControl1.Zoom = 0D;
             this.gMapControl1.Load += new System.EventHandler(this.gMapControl1_Load);
             // 
+            // saveCompatibilitiesInCSVToolStripMenuItem
+            // 
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Name = "saveCompatibilitiesInCSVToolStripMenuItem";
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Size = new System.Drawing.Size(371, 26);
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Text = "Save compatibilities in CSV";
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Click += new System.EventHandler(this.saveCompatibilitiesInCSVToolStripMenuItem_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -438,6 +447,7 @@ namespace AsterixDecoder
         private System.Windows.Forms.ToolStripMenuItem importSID06RToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importSID24LToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem computeCompatibilitiesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveCompatibilitiesInCSVToolStripMenuItem;
     }
 }
 
