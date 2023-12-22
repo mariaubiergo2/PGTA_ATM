@@ -35,7 +35,14 @@ namespace AsterixDecoder.Data_Items_Objects
 
         public string GetACclassification(string ACmodel)
         {
-            return classificationDictionary[ACmodel];
+            if (classificationDictionary.ContainsKey(ACmodel))
+            {
+                return classificationDictionary[ACmodel];
+            }
+            else
+            {
+                return "NR";
+            }
         }
 
         public string GetACEstela(string AC_ID)
@@ -45,9 +52,17 @@ namespace AsterixDecoder.Data_Items_Objects
 
         public string GetSIDGroup(string SID)
         {
+            string SID_letter = SID.Substring(SID.Length - 1);
             SID = useful.RemoveEnd(SID, 2);
-            
-            return SIDDictionary[SID];
+            SID = SID + "-" + SID_letter;
+            if (SIDDictionary.ContainsKey(SID))
+            {
+                return SIDDictionary[SID];
+            }
+            else
+            {
+                return "OTRO";
+            }
         }
 
 
@@ -236,17 +251,14 @@ namespace AsterixDecoder.Data_Items_Objects
             }
         }
 
-        public void SetACpairs()
+        public AC_pair SetACpairs(Ruta dep1, Ruta dep2, ACinfo aC1, ACinfo aC2)
         {
             //Recórrer la llista de despegues
 
             //Trobar la hora a la que toca començar --> bucle recorrent els AC_INFO fins que un no aparegui més 
             //Creo de manera provisional les dos departures i els dos ACinfo que hem de buscar dins del bucle. 
-            Ruta dep1 = new Ruta();
-            Ruta dep2 = new Ruta();
-            ACinfo aC1 = new ACinfo();
-            ACinfo aC2 = new ACinfo();
-
+            
+            //Get coordinates
             CoordinatesWGS84 geodesic_AC1 = new CoordinatesWGS84(aC1.Latitude * Math.PI / 180, aC1.Longitude * Math.PI / 180, aC1.Height);
             CoordinatesUVH stereo_AC1 = useful.GetStereographic(geodesic_AC1);
 
@@ -273,11 +285,12 @@ namespace AsterixDecoder.Data_Items_Objects
 
             double min_LoA = GetMinimumSeparation(class_AC1, class_AC2, same);
 
-            AC_pair aC_Pair = new AC_pair(aC1.I161_Tn, aC1.I140_ToD, aC1.Latitude, aC1.Longitude, aC2.I161_Tn, aC2.I140_ToD, aC2.Latitude, aC2.Longitude,d_real, min_radar, min_estela, min_LoA);
+            AC_pair aC_Pair = new AC_pair(aC1.I240_TId, aC1.I140_ToD, aC1.Latitude, aC1.Longitude, aC2.I240_TId, aC2.I140_ToD, aC2.Latitude, aC2.Longitude ,d_real, min_radar, min_estela, min_LoA);
 
             //Repetir cada 4 segons fins que el primer AC desaparegui (passar a la següent parella de ACinfo)
 
             //Repetir per a la següent parella (departure +1)
+            return aC_Pair;
 
         }
 

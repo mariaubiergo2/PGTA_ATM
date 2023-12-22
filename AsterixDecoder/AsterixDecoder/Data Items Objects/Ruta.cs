@@ -10,7 +10,7 @@ namespace AsterixDecoder.Data_Items_Objects
     {
         public string id { get; set; }
         public string indicativo { get; set; }
-        public string HoraDespegue { get; set; }
+        public DateTime HoraDespegue { get; set; }
         public string RutaSACTA { get; set; }
         public string TipoAeronave { get;  set; }
         public string Estela { get; set; }
@@ -27,7 +27,7 @@ namespace AsterixDecoder.Data_Items_Objects
             {
                 this.id = id;
                 this.indicativo = indicativo;
-                this.HoraDespegue = HoraDespegue;
+                this.HoraDespegue = ParseDateTime(HoraDespegue);
                 this.RutaSACTA = RutaSACTA;
                 this.TipoAeronave = TipoAeronave;
                 this.Estela = Estela;
@@ -38,7 +38,27 @@ namespace AsterixDecoder.Data_Items_Objects
         }
 
 
+        public DateTime ParseDateTime(string input)
+        {
+            string[] temps = input.Split(' ')[1].Split(':');
+            string hora = temps[0];
 
-        
+            if (Convert.ToInt32(hora) < 10)
+            {
+                hora = "0" + hora;
+            }
+
+            string newInput = input.Split(' ')[0] + " " + hora + ":" + temps[1] + ":" + temps[2];
+            
+            // Define the possible formats
+            string formats = "dd/MM/yyyy HH:mm:ss";
+
+            // Parse the string using the specified formats
+            DateTime dt = DateTime.ParseExact(newInput, formats, null);
+
+            return dt;
+        }
+
+
     }
 }

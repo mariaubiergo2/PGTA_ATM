@@ -30,6 +30,9 @@ namespace AsterixDecoder
         //AC classification P3 information
         ACclassification ACclassification;
 
+        //Diccionari per fer estadistiques
+        Dictionary<string, AC_pair> pairsDictionary;
+
 
         //Simulation
         //-----------------------------------------------------------
@@ -177,21 +180,27 @@ namespace AsterixDecoder
                     ACinfo ac = new ACinfo(row);
 
                     aircraftsInfo.Add(ac);
-                    Console.WriteLine(ac.I161_Tn);
 
-                    //If the dictionary already has the key
-                    if (this.aircraftsInfoDic.ContainsKey(ac.I161_Tn))
+                    if (ac.I240_TId != "")
                     {
-                        this.aircraftsInfoDic[ac.I161_Tn].Add(ac);
+                        //If the dictionary already has the key
+                        if (this.aircraftsInfoDic.ContainsKey(ac.I240_TId))
+                        {
+                            this.aircraftsInfoDic[ac.I240_TId].Add(ac);
+                        }
+                        else
+                        {
+                            List<ACinfo> list = new List<ACinfo>();
+                            list.Add(ac);
+                            this.aircraftsInfoDic.Add(ac.I240_TId, list);
+                        }
                     }
                     else
                     {
-                        List<ACinfo> list = new List<ACinfo>();
-                        list.Add(ac);
-                        this.aircraftsInfoDic.Add(ac.I161_Tn, list);
+                        Console.WriteLine(ac.I161_Tn + " has no ID");
                     }
+                                       
                 }
-                popUpLabel(Convert.ToString(aircraftsInfo.Count));
 
             }
             
@@ -387,9 +396,7 @@ namespace AsterixDecoder
                 }
 
                 this.isSimulating = false;
-            }
-                         
-            
+            }             
         }
 
         private void generateACDictionaryFromElements()
@@ -807,6 +814,8 @@ namespace AsterixDecoder
         private void LeerArchivoExcel(string rutaArchivo)
         {
             this.despeguesList = new List<Ruta>();
+            this.ACclassification = new ACclassification();
+
             try
             {
                 WorkBook workBook = WorkBook.Load(rutaArchivo);
@@ -841,6 +850,7 @@ namespace AsterixDecoder
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 popUpLabel("❌ Something went wrong... Is the EXCEL file opened somewhere else?");
             }
 
@@ -862,7 +872,7 @@ namespace AsterixDecoder
                         WorkBook workBook = WorkBook.Load(selectedFilePath);
                         WorkSheet workSheet = workBook.WorkSheets.First();
 
-                        this.ACclassification = new ACclassification();
+                        //this.ACclassification = new ACclassification();
 
                         // Iterate over all cells in the worsheet
                         foreach (var cell in workSheet)
@@ -952,7 +962,8 @@ namespace AsterixDecoder
                         {
                             if (cell.Text != "")
                             {
-                                string res = usefulFunctions.RemoveEnd(cell.Text, 2);
+                                //string res = usefulFunctions.RemoveEnd(cell.Text, 2);
+                                string res = cell.Text;
 
                                 if (cell.AddressString.Contains("A"))
                                 {
@@ -1016,7 +1027,8 @@ namespace AsterixDecoder
                         {
                             if (cell.Text != "")
                             {
-                                string res = usefulFunctions.RemoveEnd(cell.Text, 2);
+                                //string res = usefulFunctions.RemoveEnd(cell.Text, 2);
+                                string res = cell.Text;
 
                                 if (cell.AddressString.Contains("A"))
                                 {
@@ -1060,24 +1072,84 @@ namespace AsterixDecoder
 
         private void computeCompatibilitiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            this.pairsDictionary = new Dictionary<string, AC_pair>();
+
             //Compute if the take offs are compatible here
             int i = 0;
+
+            //int i = 2;
+            //while (i < 3)
             while(i < despeguesList.Count - 1)
             {
                 //1. computeDistanceBetweenNextAC(despeguesList[i], despeguesList[i + 1])
-                double realSeparation = 20; //NM
+                Ruta despegue1 = despeguesList[i];
+                Ruta despegue2 = despeguesList[i + 1];
 
-                //2. passem la distancia i mirem si compleix la minima per radar
-                computeRadarCompatibility(realSeparation);
+                //1.1 Mirem a quina hora surt el segon despegue
+                DateTime startHour = despegue2.HoraDespegue;
 
-                //3. passem la distancia i mirem si es compatible per les esteles
-                computeEstelaCompatibility(despeguesList[i], despeguesList[i + 1], realSeparation);
+                //1.2 Busquem els ACinfo a partir d'aquella hora amb un marge de +-3s?
+                List<ACinfo> info1 = aircraftsInfoDic[despegue1.indicativo];
+                List<ACinfo> info2 = aircraftsInfoDic[despegue2.indicativo];
 
-                //4. passem la distancia i mirem si es compleix per la LoA
-                computeLoACompatibility(despeguesList[i], despeguesList[i + 1], realSeparation);
+                //Hi ha algun ACinfo que compleixi aixòs?
+                bool found1 = false;
+                int initialACinfoPosition1 = -1;
+                while (initialACinfoPosition1 < info1.Count && !found1)
+                {
+                    initialACinfoPosition1++;
+
+                    if (initialACinfoPosition1 != info1.Count)
+                    {
+                        found1 = usefulFunctions.isDateBetween((info1[initialACinfoPosition1].I140_ToD), (info1[initialACinfoPosition1].I140_ToD).AddSeconds(3), startHour);
+                    }
+
+                }
+
+
+                if (found1)
+                {
+                    //Busquem on comença el despegue2 en el seu llistat d'asteriks 
+                    bool found2 = false;
+                    int initialACinfoPosition2 = -1;
+                    while (initialACinfoPosition2 < info2.Count && !found2)
+                    {
+                        initialACinfoPosition2++;
+
+                        if (initialACinfoPosition2 != info2.Count)
+                        {
+                            found2 = usefulFunctions.isDateBetween((info2[initialACinfoPosition2].I140_ToD), (info2[initialACinfoPosition2].I140_ToD).AddSeconds(3), startHour);
+                        }
+                    }
+                    if (found2)
+                    {
+                        //ARA val la pena comparar
+                        ACinfo startingPoint1 = info1[initialACinfoPosition1];
+
+                        ACinfo startingPoint2 = info2[initialACinfoPosition2];
+
+                        AC_pair pair = this.ACclassification.SetACpairs(despegue1, despegue2, startingPoint1, startingPoint2);
+
+                        if (this.pairsDictionary.ContainsKey(despegue1.indicativo))
+                        {
+
+                        }
+                        else
+                        {
+                            this.pairsDictionary.Add(despegue1.indicativo, pair);
+                        }
+                        
+                    }
+                    else
+                    {
+                        //Emmagatzemar que no s'ha trobat cap Asteriks per aquell despegue
+                    }
+                }                
 
                 i++;
             }
+
+            Console.WriteLine("c'est fini");
         }
 
 

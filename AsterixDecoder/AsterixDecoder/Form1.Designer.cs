@@ -85,7 +85,7 @@ namespace AsterixDecoder
             this.title.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.title.Location = new System.Drawing.Point(1249, 476);
             this.title.Name = "title";
-            this.title.Size = new System.Drawing.Size(44, 16);
+            this.title.Size = new System.Drawing.Size(46, 17);
             this.title.TabIndex = 5;
             this.title.Text = "label1";
             // 
@@ -111,8 +111,8 @@ namespace AsterixDecoder
             // cSVToolboxToolStripMenuItem
             // 
             this.cSVToolboxToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importCSVFileToolStripMenuItem,
             this.importTakeOffsExcelFileToolStripMenuItem,
+            this.importCSVFileToolStripMenuItem,
             this.importClassificationACsExcelFileToolStripMenuItem,
             this.importSID06RToolStripMenuItem,
             this.importSID24LToolStripMenuItem});
@@ -214,7 +214,7 @@ namespace AsterixDecoder
             this.infoLbl.Font = new System.Drawing.Font("Cascadia Code", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.infoLbl.Location = new System.Drawing.Point(13, 541);
             this.infoLbl.Name = "infoLbl";
-            this.infoLbl.Size = new System.Drawing.Size(76, 24);
+            this.infoLbl.Size = new System.Drawing.Size(78, 25);
             this.infoLbl.TabIndex = 12;
             this.infoLbl.Text = "label1";
             // 

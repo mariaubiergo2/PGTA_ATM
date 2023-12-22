@@ -36,7 +36,46 @@ namespace AsterixDecoder.Data_Items_Objects
 
         }
 
+        //SIMPLIFICAT
         public ACinfo(string[] row)
+        {
+            try
+            {
+                UsefulFunctions useful = new UsefulFunctions();
+                double lat = GetDoubleValue(row[0]);
+                double longi = GetDoubleValue(row[1]);
+                double height = GetDoubleValue(row[2]);
+
+                if (40.9 < lat && lat < 41.7 && 1.5 < longi && longi < 2.6)
+                {
+                    this.Latitude = lat;
+                    this.Longitude = longi;
+                    this.Height = height;
+
+                    //Important de fer la funcio:
+                    this.I140_ToD = useful.fromToD2Hour(GetDoubleValue(row[3]));
+
+                    //Convert a coordenades estereografiques
+                    this.I040_RHO = GetDoubleValue(row[4]);
+                    this.I040_THETA = GetDoubleValue(row[5]);
+                    this.I090_FL = GetDoubleValue(row[6]);
+                    this.I240_TId = row[7]; 
+
+                    //CoordinatesWGS84 geodesic_coordinates = new CoordinatesWGS84(lat * Math.PI / 180, longi * Math.PI / 180, height);
+                    //CoordinatesUVH stereo_coord = useful.GetStereographic(geodesic_coordinates);
+                    
+                }
+            }
+            catch
+            {
+                // Handle the exception
+            }
+
+        }
+
+
+        //RESULTA QUE LES DADES QUE TENIEM I LA DECODIFICADA ES DIFERENTA
+        public ACinfo(string[] row, bool PERQUANHOVOLEMCOMPLET)
         {
             try
             {

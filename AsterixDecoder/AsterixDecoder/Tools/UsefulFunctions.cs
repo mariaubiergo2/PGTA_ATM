@@ -403,10 +403,13 @@ namespace AsterixDecoder
             //CONVERTIR DE SEGONS A DATETIME FORMAT :)
 
             string time = TimeSpan.FromSeconds(seconds).ToString(@"hh\:mm\:ss\:fff");
+            // Specify the date to be 02/05/2023
+            string dateTimeString = "02/05/2023 " + time;
 
-            string format = "HH:mm:ss:fff";
+            // Define the format for parsing
+            string format = "dd/MM/yyyy HH:mm:ss:fff";
 
-            DateTime dt = DateTime.ParseExact(time, format, null);
+            DateTime dt = DateTime.ParseExact(dateTimeString, format, null);
             
             return dt;
         }
