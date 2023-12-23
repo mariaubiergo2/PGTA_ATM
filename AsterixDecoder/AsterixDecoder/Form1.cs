@@ -33,9 +33,13 @@ namespace AsterixDecoder
         ACclassification ACclassification;
 
         //Diccionari per fer estadistiques
-        Dictionary<string, AC_pair> pairsDictionary;
+        //TOTS ELS IDs i el seu ACpair
+        Dictionary<string, List<AC_pair>> pairsDictionary;
 
         List<AC_pair> pairsList;
+
+        //string1 identificador, string2 estela+loa+radar if ho incumpleix tot
+        Dictionary<string, string> incumplimientos;
 
 
         //Simulation
@@ -171,6 +175,7 @@ namespace AsterixDecoder
 
                 progressLbl.Visible = true;
                 progressBar1.Visible = true;
+
 
                 //first line dissmissed because it is the header
                 int len = lines.Length;
@@ -825,10 +830,16 @@ namespace AsterixDecoder
                 WorkBook workBook = WorkBook.Load(rutaArchivo);
                 WorkSheet workSheet = workBook.WorkSheets.First();
 
+                progressLbl.Visible = true;
+                progressBar1.Visible = true;
+                
                 // Iterate over all cells in the worsheet
                 int row = 2;
                 while (row <= workSheet.RowCount)
                 {
+                    int valProgress = Convert.ToInt32(Convert.ToDouble(row) / workSheet.RowCount * 100);
+                    ReportProgess(valProgress);
+
                     Ruta despegue = new Ruta(
                         Convert.ToString(workSheet["A" + Convert.ToString(row)]),
                         Convert.ToString(workSheet["B" + Convert.ToString(row)]),
@@ -837,9 +848,11 @@ namespace AsterixDecoder
                         Convert.ToString(workSheet["E" + Convert.ToString(row)]),
                         Convert.ToString(workSheet["F" + Convert.ToString(row)]),
                         Convert.ToString(workSheet["G" + Convert.ToString(row)]),
-                        Convert.ToString(workSheet["H" + Convert.ToString(row)])
+                        Convert.ToString(workSheet["H" + Convert.ToString(row)]),
+                        Convert.ToString(workSheet["I" + Convert.ToString(row)])
                         );
 
+                    //No s'afegeixen les que no surten per la 24L o 06R
                     if (despegue.id != null)
                     {                        
                         this.despeguesList.Add(despegue);
@@ -848,6 +861,10 @@ namespace AsterixDecoder
 
                     row++;
                 }
+
+                progressLbl.Visible = false;
+                progressBar1.Visible = false;
+
 
                 popUpLabel("✅ Correctly loaded " + Convert.ToString(despeguesList.Count)+ " take off!");
                                 
@@ -1076,8 +1093,9 @@ namespace AsterixDecoder
 
         private void computeCompatibilitiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.pairsDictionary = new Dictionary<string, AC_pair>();
+            this.pairsDictionary = new Dictionary<string, List<AC_pair>>();
             this.pairsList = new List<AC_pair>();
+            this.incumplimientos = new Dictionary<string, string>();
 
             //Compute if the take offs are compatible here
             int i = 0;
@@ -1145,15 +1163,18 @@ namespace AsterixDecoder
                             if (inInterval)
                             {
                                 AC_pair pair = this.ACclassification.SetACpairs(despegue1, despegue2, startingPoint1, startingPoint2);
-
+                                                               
                                 //Generem un diccionari per fer estadístiques 
-                                if (this.pairsDictionary.ContainsKey(despegue1.indicativo))
+                                if (this.pairsDictionary.ContainsKey(despegue2.indicativo))
                                 {
-
+                                    this.pairsDictionary[despegue2.indicativo].Add(pair);
                                 }
                                 else
                                 {
-                                    this.pairsDictionary.Add(despegue1.indicativo, pair);
+                                    //Diccionari amb els incumpliments afegim la parella
+                                    List<AC_pair> n = new List<AC_pair>();
+                                    n.Add(pair);
+                                    this.pairsDictionary.Add(despegue2.indicativo, n);                                    
                                 }
 
                                 //Llistat per fer el CSV
@@ -1181,86 +1202,10 @@ namespace AsterixDecoder
                 i++;
             }
 
-            Console.WriteLine("c'est fini");
+            popUpLabel("✅ Correctly done the compatibilities test!");
         }
 
 
-
-
-
-        private void computeRadarCompatibility (double realSeparation)
-        {
-            //Separacion minima radar = 3NM
-            if (realSeparation >= 3.0)
-            {
-                //Compatible segons la minima del radar
-            }
-            else
-            {
-                //No compatible segons el radar
-            }
-
-
-            //ANOTHER WAY TO MAKE STATISTICS LATER:
-            double difference = realSeparation - 3.0;
-            if (difference >= 0)
-            {
-                //The separation is bigger
-            }
-            else
-            {
-                //The separation is not bigger than 3NM and the difference is abs(difference)
-            }
-        }
-
-        private void computeEstelaCompatibility(Ruta first, Ruta second, double realSeparation)
-        {
-            double minSeparation = 0.0; //Separacion minima
-
-            //Despeguen pel mateix lloc?
-            //S'ha de mirar akgo mes de la ruta?!?!??!?!
-            if (first.PistaDesp == second.PistaDesp)
-            {
-                string sucesiva = second.Estela;
-                switch (first.Estela)
-                {
-                    case "Super Pesada":
-                        if (sucesiva == "Pesada") { minSeparation = 6.0; }
-                        else if (sucesiva == "Media") { minSeparation = 7.0; }
-                        else { minSeparation = 8.0; }
-                        break;
-
-                    case "Pesada":
-                        if (sucesiva == "Pesada") { minSeparation = 4.0; }
-                        else if (sucesiva == "Media") { minSeparation = 5.0; }
-                        else { minSeparation = 6.0; }
-                        break;
-
-                    case "Mediana":
-                        if (sucesiva == "Ligera") { minSeparation = 5.0; }
-                        break;
-                }
-                Console.WriteLine("Minimum separation due Estela:");
-                Console.WriteLine(minSeparation);
-
-                if (realSeparation >= minSeparation)
-                {
-                    //Todo gucci, esteles compatibles
-                }
-                else
-                {
-                    //Esteles no compatibles
-                }
-            }
-        }
-
-
-        private void computeLoACompatibility(Ruta first, Ruta second, double realDistance)
-        {
-
-
-
-        }
 
         private void gMapControl1_Load(object sender, EventArgs e)
         {
@@ -1313,13 +1258,78 @@ namespace AsterixDecoder
         {
             string d1 = "05/02/2023 14:10:20";
             string d2 = "05/02/2023 14:10:19";
+            
+            Console.WriteLine(d1.Substring(1));
+            Console.WriteLine(Convert.ToString(d1.ToCharArray()[0]));
 
-            DateTime dateTime1 = DateTime.Parse(d1);
-            DateTime dateTime2 = DateTime.Parse(d2);
+        }
+
+        private void getCompleteTakeOffsCSVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //RETURN A CSV FILE WITH ALL THE DEPARTURES BUT WITH AMPLIFIED INFORMATION :)
+
+            int i = 0;
+            while (i < despeguesList.Count)
+            {
+                //Ja tenim els conflictes
+                //Ja tenim la minima distancia
+                //Ara volem la classificació
+                despeguesList[i].setClassification(this.ACclassification.GetACclassification(despeguesList[i].TipoAeronave));
+                //I ara la sid!
+                despeguesList[i].setGroupSID(this.ACclassification.GetSIDGroup(despeguesList[i].ProcDesp));
+
+                if (pairsDictionary.ContainsKey(despeguesList[i].indicativo))
+                {
+                    foreach (AC_pair pair in this.pairsDictionary[despeguesList[i].indicativo])
+                    {
+                        this.despeguesList[i].setIncumplimentos(pair);
+                        this.despeguesList[i].setMinimaDistancia(pair.real_dist);
+                    }
+
+                }
 
 
-            bool c = usefulFunctions.differenceTimesInInterval(dateTime1, dateTime2, 2);
-            Console.WriteLine(c);
+                i++;
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            // Set initial directory and file name filters if needed
+            saveFileDialog.InitialDirectory = this.projectDirectory;
+            saveFileDialog.Filter = "CSV files (*.csv)|*.csv";
+
+            try
+            {
+                // Show the dialog and check if the user clicked OK
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Get the selected file name
+                    string filePath = saveFileDialog.FileName;
+
+                    // Your existing code to write to CSV
+                    using (var writer = new StreamWriter(filePath))
+                    using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csvWriter.WriteRecords<Ruta>(despeguesList);
+                    }
+
+                    if (despeguesList.Count != 0)
+                    {
+                        popUpLabel("✅ Your file is correctly saved!");
+                    }
+                    else
+                    {
+                        popUpLabel("✅ Your file is correctly saved! Yet is empty.");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                popUpLabel("❌ Something went wrong... Please, try again!");
+            }
+
         }
     }
 }

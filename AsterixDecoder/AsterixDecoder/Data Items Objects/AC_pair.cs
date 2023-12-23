@@ -21,6 +21,7 @@ namespace AsterixDecoder.Data_Items_Objects
         public double min_estela { get; set; }
         public double min_LoA { get; set; }
 
+        //Incumplimientos
         public bool hayIncumplimiento { get; set; }
         public bool incumpleEstela { get; set; }
         public bool incumpleLoA { get; set; }
@@ -76,6 +77,40 @@ namespace AsterixDecoder.Data_Items_Objects
                 this.hayIncumplimiento = true;
             }
 
+        }
+
+        public string getIncumplimientosString()
+        {
+            string res = "";
+            if (incumpleEstela)
+            {
+                res = res + "Estela";
+            }
+            if (incumpleLoA)
+            {
+                res = res + "+LoA";
+            }
+            if (incumpleRadar)
+            {
+                res = res + "+Radar";
+            }
+            if (res == "")
+            {
+                return "Non";
+            }
+            else
+            {
+                string first = Convert.ToString(res.ToCharArray()[0]);
+                if (first == "+")
+                {
+                    return res.Substring(1);
+                }
+                else
+                {
+                    return res;
+                }
+
+            }
         }
 
     }
