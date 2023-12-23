@@ -19,7 +19,12 @@ namespace AsterixDecoder.Data_Items_Objects
         public double real_dist { get; set; }
         public double min_radar { get; set; }
         public double min_estela { get; set; }
-        public double min_LoA   { get; set; }
+        public double min_LoA { get; set; }
+
+        public bool hayIncumplimiento { get; set; }
+        public bool incumpleEstela { get; set; }
+        public bool incumpleLoA { get; set; }
+        public bool incumpleRadar { get; set; }
 
         public AC_pair()
         {
@@ -39,6 +44,38 @@ namespace AsterixDecoder.Data_Items_Objects
             this.min_radar = min_radar;
             this.min_estela = min_estela;
             this.min_LoA = min_LoA;
+
+            if (real_dist >= min_radar)
+            {
+                this.incumpleRadar = false;
+                this.hayIncumplimiento = false;
+            }
+            else
+            {
+                this.incumpleRadar = true;
+                this.hayIncumplimiento = true;
+            }
+            if (real_dist >= min_estela)
+            {
+                this.incumpleEstela = false;
+                this.hayIncumplimiento = false;
+            }
+            else
+            {
+                this.incumpleEstela = true;
+                this.hayIncumplimiento = true;
+            }
+            if (real_dist >= min_LoA)
+            {
+                this.incumpleLoA = false;
+                this.hayIncumplimiento = false;
+            }
+            else
+            {
+                this.incumpleLoA = true;
+                this.hayIncumplimiento = true;
+            }
+
         }
 
     }
