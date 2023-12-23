@@ -13,20 +13,28 @@ _Authors: Júlia Capella Campdepadrós, Paula Chalé Castell, Laia Costa Cid, Bi
    - Functionality to analyse the data. 
 The data once loaded must be ordered and processed. Computing compatibilities, then, its the first step. *Compatibility* in this project is understood as the pair of 2 data items of different aircrafts that have taken off sequentialy and are taken at the same time +/- 2s.
 
-4. **ASTERIX Analysis epxortation:**
+4. **ASTERIX Analysis exportation:**
    - Functionality to export the merged data in a CSV file.
 May sound cheesy, yet what is data without a good graphical representation? And what is a good representation without a good CSV file? 
 
+5. **ASTERIX Simulation**
+Recall last project? Feel free to simulate the ACs of the whole day:
+
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/25a23ee9-5656-4b79-ada0-193cb553ba34)
+ 
 
 ## User guide
 
-*IMPORTANT* in this software the user guide is mandatory. Files have to be imported in a several order. As so computations.
+_*IMPORTANT*_ in this software the user guide is mandatory. Files have to be imported in a several order. As so computations. PLEASE TAKE IT INTO ACCOUNT :)
 
 1. **Import each file:**
 
 The files used are alocated in the *files needed* folder of this project. Each file name includes: [ORDER] + [BRIEF DESCRIPTION] 
 
 And the place from which has to be imported contains the [ORDER] and another breif description of the button.
+
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/a660d82a-c68e-4df7-9e37-b1565fdf4f7a)
+
 
 Watch out that there will appear informational texts in the bottom left part of the screen.
 
