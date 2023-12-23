@@ -1,64 +1,65 @@
-# ASTERIX HACKATHON README
+# ATM ASTERIX Hackathon Part 2 README
 
-Welcome to the ASTERIX Hackathon! We're thrilled to show you our PGTA project, a coding challenge focused on developing an ASTERIX decoder for category 048. The primary objective is to create a robust decoder capable of exporting results to a CSV file from a binary file, which, besides visualization, will serve as valuable input data for future analysis, including Project 3.
+Welcome to the ASTERIX Hackathon Part 2! We're thrilled to show you our PGTA project, an Air Traffic Management challenge focused on developing a software to compute the adhesion between the trajectories of real take offs in the BCN-el Prat airport. The primary objective is to create a robust software capable of exporting results to a CSV file from the imported data with the main parameters to extract statistics from the data analysis.
 
 _Authors: Júlia Capella Campdepadrós, Paula Chalé Castell, Laia Costa Cid, Biel Gómez Crespo, David Movilla Cobo, Maria Ubiergo Gómez_
 
-## Decoder functionalities
+## Software functionalities
 
-1. **ASTERIX Decoder:**
-   - Read a binary file in an understandable table format.
-   - Save the decoded information as a CSV.
+1. **ASTERIX Load Data:**
+   - It is used the already decoded information about the data items. Therefore, the main task is to read and store the CSV files with all the information to analyse.
 
-2. **ASTERIX simulation:**
-   - View the binary CAT048 information of the flight paths on the map.
-   - Restart, pause and end the time-based simulation.
-   - Change velocities.
-   - Change map features.
+2. **ASTERIX Data Analysis:**
+   - Functionality to analyse the data. 
+The data once loaded must be ordered and processed. Computing compatibilities, then, its the first step. *Compatibility* in this project is understood as the pair of 2 data items of different aircrafts that have taken off sequentialy and are taken at the same time +/- 2s.
 
-3. **ASTERIX KML extraction:**
-   - Functionality to export flight trajectories to a KML file.
-   - The KML file includes fight level or corrected height.
-   - Foreach path in the KML the viewer can see the A/C ID, address, Mode 3A and TYP020.
+4. **ASTERIX Analysis exportation:**
+   - Functionality to export the merged data in a CSV file.
+May sound cheesy, yet what is data without a good graphical representation? And what is a good representation without a good CSV file? 
+
+5. **ASTERIX Simulation**
+Recall last project? Feel free to simulate the ACs of the whole day:
+
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/25a23ee9-5656-4b79-ada0-193cb553ba34)
+ 
 
 ## User guide
 
-1. **Import the binary file:**
+**IMPORTANT** in this software the user guide is mandatory. Files have to be imported in a several order. As so computations. PLEASE TAKE IT INTO ACCOUNT :)
+
+1. **Import each file:**
+
+The files used (5 files in total) are alocated in the *files needed* folder of this project. Each file name includes: [ORDER] + [BRIEF DESCRIPTION] 
+
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/27726280-b004-4b3b-8315-d51aa89763b4)
 
 
-![image](https://github.com/mariaubiergo2/PGTA_AsterixDecoder/assets/91792580/9c517dd6-e865-4ee5-a67a-d71e77291af4)
+And the place from which has to be imported contains the [ORDER] and another breif description of the button.
+
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/a660d82a-c68e-4df7-9e37-b1565fdf4f7a)
 
 
+Watch out that there will appear informational texts in the bottom left part of the screen.
 
-Any .AST, .BIN or file can be uploaded. The result is shown in the same screen.
-
-
-![image](https://github.com/mariaubiergo2/PGTA_AsterixDecoder/assets/91792580/b4cef9a5-f8ae-4f0d-bbc8-fa06ddde64c8)
-
-
-
-2. **Save in a CSV:**
-It can be saved in any folder as a .csv file.
-
-3. **Simulate the current binary file:**
-
-
-![image](https://github.com/mariaubiergo2/PGTA_AsterixDecoder/assets/91792580/81616ba3-b42d-4adb-96c5-2c5ac5b6c304)
-
-
-
-4. **Decide how to simulate it:**
-
-
-![image](https://github.com/mariaubiergo2/PGTA_AsterixDecoder/assets/91792580/f909c600-0bc0-4353-809f-8fe5260ff3f2)
+2. **Data analysis:**
+   6. Click here:
+  ![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/e90a858d-b99a-496c-b930-1bd49ee5a1ec)
 
 
 
-5. **Export the trajectory in a KML file:**
+3. **Export your merged and computed data in a CSV file:**
+   7. In order to obtain all the pairs of aircrafts
+   8. Important file! 
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/621a3c90-7581-4814-8932-e7c4feaaef66)
 
 
+4. **Open your CSV file:**
 
-![image](https://github.com/mariaubiergo2/PGTA_AsterixDecoder/assets/91792580/283f263d-1242-46d6-92dc-707b57fc3ef6)
+5. **Simulation:**
+   1. Click on:
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/1b87d7ff-56cb-4d21-8c40-b6dc78b79d56)
+
+   2. Click on the play button. If there are no AC shown its because there is no information in that hours.
 
 
 
@@ -67,14 +68,14 @@ It can be saved in any folder as a .csv file.
 _This is a message for the teachers, who have the Drive access._
 
 
-Due to severals technical issues, we can not provide you with a stable version of the setup. However, in the "Ejecutable - AsterixDecoderApp" folder you will find the "AsterixDecoder" application file, which has a different icon:
+Dear user, in the "Ejecutable - ATMsoftware" folder you will find the "AsterixDecoder" application file, which has a different icon:
 
 
 ![image](https://github.com/mariaubiergo2/PGTA_AsterixDecoder/assets/91792580/5cdcb36e-47ae-4d51-857c-8e3c223478b8)
 
 
 
-Run this version by just clicking on it, to test the decoder's capabilities.
+Run this version by just clicking on it, to test the software's capabilities.
 
 
 ## ENJOY!
