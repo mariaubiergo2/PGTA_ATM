@@ -25,11 +25,14 @@ Recall last project? Feel free to simulate the ACs of the whole day:
 
 ## User guide
 
-_*IMPORTANT*_ in this software the user guide is mandatory. Files have to be imported in a several order. As so computations. PLEASE TAKE IT INTO ACCOUNT :)
+**IMPORTANT** in this software the user guide is mandatory. Files have to be imported in a several order. As so computations. PLEASE TAKE IT INTO ACCOUNT :)
 
 1. **Import each file:**
 
-The files used are alocated in the *files needed* folder of this project. Each file name includes: [ORDER] + [BRIEF DESCRIPTION] 
+The files used (5 files in total) are alocated in the *files needed* folder of this project. Each file name includes: [ORDER] + [BRIEF DESCRIPTION] 
+
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/27726280-b004-4b3b-8315-d51aa89763b4)
+
 
 And the place from which has to be imported contains the [ORDER] and another breif description of the button.
 
@@ -39,21 +42,24 @@ And the place from which has to be imported contains the [ORDER] and another bre
 Watch out that there will appear informational texts in the bottom left part of the screen.
 
 2. **Data analysis:**
-   1. Click here:
-  
-   2. Click here:
+   6. Click here:
+  ![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/e90a858d-b99a-496c-b930-1bd49ee5a1ec)
+
 
 
 3. **Export your merged and computed data in a CSV file:**
-
-
-
+   7. In order to obtain all the pairs of aircrafts
+   8. Important file! 
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/621a3c90-7581-4814-8932-e7c4feaaef66)
 
 
 4. **Open your CSV file:**
 
+5. **Simulation:**
+   1. Click on:
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/1b87d7ff-56cb-4d21-8c40-b6dc78b79d56)
 
-
+   2. Click on the play button. If there are no AC shown its because there is no information in that hours.
 
 
 
