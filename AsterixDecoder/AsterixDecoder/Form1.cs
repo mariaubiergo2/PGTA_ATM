@@ -1286,6 +1286,37 @@ namespace AsterixDecoder
                         this.despeguesList[i].setMinimaDistancia(pair.real_dist);
                     }
 
+                    string res = "";
+                    if (despeguesList[i].incumpleEstelaDespegue)
+                    {
+                        res = res + "Estela";
+                    }
+                    if (despeguesList[i].incumpleLoADespegue)
+                    {
+                        res = res + "+LoA";
+                    }
+                    if (despeguesList[i].incumpleRadarDespegue)
+                    {
+                        res = res + "+Radar";
+                    }
+                    if (res == "")
+                    {
+                        despeguesList[i].incumplimientosList = "Non";
+                    }
+                    else
+                    {
+                        string first = Convert.ToString(res.ToCharArray()[0]);
+                        if (first == "+")
+                        {
+                            despeguesList[i].incumplimientosList = res.Substring(1);
+                        }
+                        else
+                        {
+                            despeguesList[i].incumplimientosList = res;
+                        }
+
+                    }
+
                 }
 
 

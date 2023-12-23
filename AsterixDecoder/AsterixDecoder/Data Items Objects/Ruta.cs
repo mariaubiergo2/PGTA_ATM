@@ -101,11 +101,7 @@ namespace AsterixDecoder.Data_Items_Objects
                     this.incumpleRadarDespegue = true;
                 }
 
-                if (this.incumplimientosList.Split('+').Count() < pareja.getIncumplimientosString().Split('+').Count())
-                {
-                    this.incumplimientosList = pareja.getIncumplimientosString();
-                    
-                }
+                
 
             }
 
