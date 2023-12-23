@@ -57,7 +57,8 @@ Watch out that there will appear informational texts in the bottom left part of 
 
 5. **Simulation:**
    1. Click on:
-![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/1b87d7ff-56cb-4d21-8c40-b6dc78b79d56)
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/c5720024-69ec-4ca7-b3be-da971f9c6bff)
+)
 
    2. Click on the play button. If there are no AC shown its because there is no information in that hours.
 
@@ -68,7 +69,7 @@ Watch out that there will appear informational texts in the bottom left part of 
 _This is a message for the teachers, who have the Drive access._
 
 
-Dear user, in the "Ejecutable - ATMsoftware" folder you will find the "AsterixDecoder" application file, which has a different icon:
+Dear user, in the "ATMsoftware" folder you will find the "AsterixDecoder" application file, which has a different icon:
 
 
 ![image](https://github.com/mariaubiergo2/PGTA_AsterixDecoder/assets/91792580/5cdcb36e-47ae-4d51-857c-8e3c223478b8)
