@@ -29,7 +29,7 @@ Recall last project? Feel free to simulate the ACs of the whole day:
 
 1. **Import each file:**
 
-The files used (5 files in total) are alocated in the *files needed* folder of this project. Each file name includes: [ORDER] + [BRIEF DESCRIPTION] 
+The files used (5 files in total) are alocated in the *files needed* folder of the DRIVE project. Each file name includes: [ORDER] + [BRIEF DESCRIPTION] 
 
 ![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/27726280-b004-4b3b-8315-d51aa89763b4)
 
@@ -52,10 +52,17 @@ Watch out that there will appear informational texts in the bottom left part of 
    8. Important file! 
 ![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/621a3c90-7581-4814-8932-e7c4feaaef66)
 
+ATENTION:
+In the DRIVE folder you can find the output files:
+![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/c35dcf5c-b03d-4e2d-a41d-487f8bd146cd)
+
+
 
 4. **Open your CSV file:**
+   - With POWER BI you can obtain FANCY SCHEMAS such as these:
 
-5. **Simulation:**
+
+6. **Simulation:**
    1. Click on:
 ![image](https://github.com/mariaubiergo2/PGTA_ATM/assets/91792580/c5720024-69ec-4ca7-b3be-da971f9c6bff)
 )
