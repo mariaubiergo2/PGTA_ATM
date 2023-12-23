@@ -38,10 +38,6 @@ namespace AsterixDecoder
 
         List<AC_pair> pairsList;
 
-        //string1 identificador, string2 estela+loa+radar if ho incumpleix tot
-        Dictionary<string, string> incumplimientos;
-
-
         //Simulation
         //-----------------------------------------------------------
 
@@ -260,87 +256,27 @@ namespace AsterixDecoder
         //To generate the map from the elements decoded.
         private void trajectoriesSimulatorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            hourBox.ReadOnly = true;
+            //Hide simulation stuff
+            viewHideSimulation(false);
 
-            //Hide all the other forms
-            viewHideDecoder(false);
+            string imagePath = Path.Combine(this.projectDirectory, "img/playButton.png");
+            playPictureBox.Image = new Bitmap(imagePath);
+            this.playing = false;
 
-            //View the simulator keyboard
-            viewPanel.Visible = true;
 
-            this.endedSimulation = false;
-
-            if (firstTimeSimOpened)
-            {
-                showTime();
-                
-                hourBox.TextAlign = HorizontalAlignment.Center;
-
-                //Keyboard            
-                //Play button
-                string imagePath0 = Path.Combine(this.projectDirectory, "img/playButton.png");
-                playPictureBox.Image = new Bitmap(imagePath0);
-                playPictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-
-                //Back button
-                string imagePath2 = Path.Combine(this.projectDirectory, "img/backButton.png");
-                backPictureBox.Image = new Bitmap(imagePath2);
-                backPictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-
-                //Foward button
-                string imagePath3 = Path.Combine(this.projectDirectory, "img/fowardButton.png");
-                fowardPictureBox.Image = new Bitmap(imagePath3);
-                fowardPictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-
-                //Markers overlayed in the map
-                markers = new GMapOverlay("markers");
-                this.ACiconSize = 30;
-                string iconPath = Path.Combine(this.projectDirectory, "img/aircraft_icon.png");
-                ACicon = new Bitmap(new Bitmap(iconPath), new Size(this.ACiconSize, this.ACiconSize));
-
-                //Gmap
-                gMapControl1.MapProvider = GMapProviders.GoogleMap;
-                gMapControl1.Position = new PointLatLng(41.298, 2.080);
-                gMapControl1.MinZoom = 2;
-                gMapControl1.MaxZoom = 24;
-                gMapControl1.Zoom = 9;
-                gMapControl1.AutoScroll = true;
-                gMapControl1.DragButton = MouseButtons.Left;
-                gMapControl1.CanDragMap = true;
-
-                IsMapas.SelectedItem = "Google Maps Callejero";
-
-                Controls.Add(gMapControl1);
-
-                speedDecisionBox.SelectedItem = "x 1";
-                speedDecisionBox.DropDownStyle = ComboBoxStyle.DropDownList;
-
-                firstTimeSimOpened = false;
-            }
-            else
-            {
-                string imagePath = Path.Combine(this.projectDirectory, "img/playButton.png");
-                playPictureBox.Image = new Bitmap(imagePath);
-                this.playing = false;
-
-                timer1.Stop();
-            }
-
-            gMapControl1.Visible = true;
         }
 
         public void showTime()
         {
-            if (elements.Count != 0)
-            {                
-                string t = usefulFunctions.FormatTimeString(elements[0].UTCTime);
-                this.simulationTime = DateTime.ParseExact(t, "HH:mm:ss", null);
-                hourBox.Text = t;
+            if (aircraftsInfo.Count != 0)
+            {
+                this.simulationTime = aircraftsInfo[0].I140_ToD;
+                hourBox.Text = this.simulationTime.ToString();
             }
             else
             {
-                this.simulationTime = DateTime.ParseExact("08:00:00", "HH:mm:ss", null);
-                hourBox.Text = "08:00:00";
+                this.simulationTime = DateTime.ParseExact("21/12/2012 08:00:00", "dd/MM/yyyy HH:mm:ss", null);
+                hourBox.Text = "21/12/2012 08:00:00";
 
             }
 
@@ -376,36 +312,31 @@ namespace AsterixDecoder
 
         private void visualizeCurrentElements()
         {
-            //Simulation
-            this.playing = false;
-            if (isSimulating)
+            
+            try
             {
-                try
+                //Generate the dictionary with each AC_ID and its list of data items associated
+                //generateACDictionaryFromElements();
+
+                gMapControl1.Visible = true;
+
+                //Generate the dictionary with the AC_ID and its associated marker
+                aircraftsMarkers = new Dictionary<string, RotatableMarker>();
+
+                foreach (string id in aircraftsInfoDic.Keys)
                 {
-                    //Generate the dictionary with each AC_ID and its list of data items associated
-                    generateACDictionaryFromElements();
-
-                    gMapControl1.Visible = true;
-
-                    //Generate the dictionary with the AC_ID and its associated marker
-                    aircraftsMarkers = new Dictionary<string, RotatableMarker>();
-
-                    foreach (string id in aircraftsList.Keys)
-                    {
-                        plotTheCurrentDataItemForAGivenTime(id);
-                    }
-
-                    //First you generate the markers and then you put it in the map
-                    gMapControl1.Overlays.Add(markers);
-
-                }
-                catch
-                {
-                    popUpLabel("❌ Something went wrong...");
+                    plotTheCurrentDataItemForAGivenTime(id);
                 }
 
-                this.isSimulating = false;
-            }             
+                //First you generate the markers and then you put it in the map
+                gMapControl1.Overlays.Add(markers);
+
+            }
+            catch 
+            {
+                popUpLabel("❌ Something went wrong...");
+            }
+                        
         }
 
         private void generateACDictionaryFromElements()
@@ -445,7 +376,7 @@ namespace AsterixDecoder
         //Simulator
         private void playPictureBox_Click(object sender, EventArgs e)
         {
-            if (elements.Count != 0 && aircraftsList != null)
+            if (aircraftsInfo.Count != 0 && aircraftsInfoDic != null)
             {
                 if (this.endedSimulation)
                 {
@@ -477,8 +408,8 @@ namespace AsterixDecoder
                     timer1.Start();
 
                     //Set time
-                    string simTime = hourBox.Text;
-                    this.simulationTime = DateTime.ParseExact(simTime, "HH:mm:ss", null);
+                    //string simTime = hourBox.Text;
+                    //this.simulationTime = DateTime.ParseExact(simTime, "dd/MM/yyyy HH:mm:ss:fff", null);
 
                 }
             }
@@ -495,23 +426,21 @@ namespace AsterixDecoder
         private void timer1_Tick(object sender, EventArgs e)
         {
             //Set time in case the our is changed manually
-            string simTime = hourBox.Text;
-            this.simulationTime = DateTime.ParseExact(simTime, "HH:mm:ss", null);
-
+            
             //Change hour
             this.simulationTime = this.simulationTime.AddSeconds(1); //you just add one second
             hourBox.Text = this.simulationTime.TimeOfDay.ToString();
             hourBox.Refresh();
 
-            foreach (string id in aircraftsList.Keys)
+            foreach (string id in aircraftsInfoDic.Keys)
             {
                 plotTheCurrentDataItemForAGivenTime(id);
             }
 
             if (markers.Markers.Count == 0)
             {
-                timer1.Stop();
-                popUpLabel("✅ End of simulation");
+                //timer1.Stop();
+                popUpLabel("✅ Simulation without data items yet everything is okay :)");
             }
 
         }
@@ -628,25 +557,25 @@ namespace AsterixDecoder
             int initialDataItem = 0;
             DateTime from = this.simulationTime;
 
-            while (initialDataItem < aircraftsList[AC_ID].Count && !found)
+            while (initialDataItem < aircraftsInfoDic[AC_ID].Count && !found)
             {                
-                found = usefulFunctions.isDateBetween(from, from.AddSeconds(1), aircraftsList[AC_ID][initialDataItem].UTCTime); //next second
+                found = usefulFunctions.isDateBetween(from, from.AddSeconds(1), aircraftsInfoDic[AC_ID][initialDataItem].I140_ToD); //next second
 
                 if (found)
                 {
-                    double latt = Convert.ToDouble(aircraftsList[AC_ID][initialDataItem].Latitude);
-                    double lonn = Convert.ToDouble(aircraftsList[AC_ID][initialDataItem].Longitude);
+                    double latt = (aircraftsInfoDic[AC_ID][initialDataItem].Latitude);
+                    double lonn = (aircraftsInfoDic[AC_ID][initialDataItem].Longitude);
 
                     PointLatLng newPosition = new PointLatLng(latt, lonn);
 
                     if (aircraftsMarkers.ContainsKey(AC_ID))
                     {
                         aircraftsMarkers[AC_ID].Position = newPosition;
-                        aircraftsMarkers[AC_ID].rotate(float.Parse(aircraftsList[AC_ID][initialDataItem].heading));
+                        //aircraftsMarkers[AC_ID].rotate(float.Parse(aircraftsList[AC_ID][initialDataItem].heading));
                     }
                     else
                     {
-                        RotatableMarker marker2 = new RotatableMarker(newPosition, ACicon, float.Parse(aircraftsList[AC_ID][initialDataItem].heading), AC_ID);
+                        RotatableMarker marker2 = new RotatableMarker(newPosition, ACicon, 0, AC_ID);
 
                         //Associate the AC_ID to its marker
                         aircraftsMarkers.Add(AC_ID, marker2);
@@ -662,9 +591,9 @@ namespace AsterixDecoder
             {
                 bool aparecera = false;
                 initialDataItem = 0;
-                while (initialDataItem < aircraftsList[AC_ID].Count && !aparecera)
+                while (initialDataItem < aircraftsInfoDic[AC_ID].Count && !aparecera)
                 {
-                    aparecera = usefulFunctions.isDateBetween(from, from.AddSeconds(8), aircraftsList[AC_ID][initialDataItem].UTCTime);
+                    aparecera = usefulFunctions.isDateBetween(from, from.AddSeconds(8), aircraftsInfoDic[AC_ID][initialDataItem].I140_ToD);
 
                     initialDataItem++;
                 }
@@ -1095,7 +1024,6 @@ namespace AsterixDecoder
         {
             this.pairsDictionary = new Dictionary<string, List<AC_pair>>();
             this.pairsList = new List<AC_pair>();
-            this.incumplimientos = new Dictionary<string, string>();
 
             //Compute if the take offs are compatible here
             int i = 0;
@@ -1361,6 +1289,97 @@ namespace AsterixDecoder
                 popUpLabel("❌ Something went wrong... Please, try again!");
             }
 
+        }
+
+        private void runSimulationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            simulationToolStripMenuItem_Click(sender, e);
+
+            //Set initial time
+            showTime();
+
+            visualizeCurrentElements();
+            if (aircraftsInfo.Count == 0)
+            {
+                popUpLabel("🔎 There is nothing to simulate, first decode.");
+            }
+
+            string imagePath = Path.Combine(this.projectDirectory, "img/playButton.png");
+            playPictureBox.Image = new Bitmap(imagePath);
+            this.playing = false;
+
+
+        }
+
+        private void simulationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hourBox.ReadOnly = true;
+
+            //Hide all the other forms
+            viewHideDecoder(false);
+
+            //View the simulator keyboard
+            viewPanel.Visible = true;
+
+            this.endedSimulation = false;
+
+            if (firstTimeSimOpened)
+            {
+                showTime();
+
+                hourBox.TextAlign = HorizontalAlignment.Center;
+
+                //Keyboard            
+                //Play button
+                string imagePath0 = Path.Combine(this.projectDirectory, "img/playButton.png");
+                playPictureBox.Image = new Bitmap(imagePath0);
+                playPictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+
+                //Back button
+                string imagePath2 = Path.Combine(this.projectDirectory, "img/backButton.png");
+                backPictureBox.Image = new Bitmap(imagePath2);
+                backPictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+
+                //Foward button
+                string imagePath3 = Path.Combine(this.projectDirectory, "img/fowardButton.png");
+                fowardPictureBox.Image = new Bitmap(imagePath3);
+                fowardPictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+
+                //Markers overlayed in the map
+                markers = new GMapOverlay("markers");
+                this.ACiconSize = 30;
+                string iconPath = Path.Combine(this.projectDirectory, "img/aircraft_icon.png");
+                ACicon = new Bitmap(new Bitmap(iconPath), new Size(this.ACiconSize, this.ACiconSize));
+
+                //Gmap
+                gMapControl1.MapProvider = GMapProviders.GoogleMap;
+                gMapControl1.Position = new PointLatLng(41.298, 2.080);
+                gMapControl1.MinZoom = 2;
+                gMapControl1.MaxZoom = 24;
+                gMapControl1.Zoom = 9;
+                gMapControl1.AutoScroll = true;
+                gMapControl1.DragButton = MouseButtons.Left;
+                gMapControl1.CanDragMap = true;
+
+                IsMapas.SelectedItem = "Google Maps Callejero";
+
+                Controls.Add(gMapControl1);
+
+                speedDecisionBox.SelectedItem = "x 1";
+                speedDecisionBox.DropDownStyle = ComboBoxStyle.DropDownList;
+
+                firstTimeSimOpened = false;
+            }
+            else
+            {
+                string imagePath = Path.Combine(this.projectDirectory, "img/playButton.png");
+                playPictureBox.Image = new Bitmap(imagePath);
+                this.playing = false;
+
+                timer1.Stop();
+            }
+
+            gMapControl1.Visible = true;
         }
     }
 }

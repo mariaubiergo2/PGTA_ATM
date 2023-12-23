@@ -369,7 +369,7 @@ namespace AsterixDecoder
             else if (result == 0)
             {
 
-                return false;
+                return true;
             }
             else
             {

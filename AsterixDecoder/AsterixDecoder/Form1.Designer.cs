@@ -44,7 +44,7 @@ namespace AsterixDecoder
             this.trajectoriesSimulatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.computeCompatibilitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveCompatibilitiesInCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tRIALSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getCompleteTakeOffsCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.infoLbl = new System.Windows.Forms.Label();
@@ -57,7 +57,8 @@ namespace AsterixDecoder
             this.viewPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.gmap2 = new GMap.NET.WindowsForms.GMapControl();
             this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
-            this.getCompleteTakeOffsCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.simulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runSimulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fowardPictureBox)).BeginInit();
@@ -119,43 +120,43 @@ namespace AsterixDecoder
             this.importSID24LToolStripMenuItem});
             this.cSVToolboxToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
             this.cSVToolboxToolStripMenuItem.Name = "cSVToolboxToolStripMenuItem";
-            this.cSVToolboxToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
+            this.cSVToolboxToolStripMenuItem.Size = new System.Drawing.Size(104, 26);
             this.cSVToolboxToolStripMenuItem.Text = "Load data";
             this.cSVToolboxToolStripMenuItem.Click += new System.EventHandler(this.cSVToolboxToolStripMenuItem_Click);
             // 
             // importTakeOffsExcelFileToolStripMenuItem
             // 
             this.importTakeOffsExcelFileToolStripMenuItem.Name = "importTakeOffsExcelFileToolStripMenuItem";
-            this.importTakeOffsExcelFileToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
-            this.importTakeOffsExcelFileToolStripMenuItem.Text = "Import take off Excel file";
+            this.importTakeOffsExcelFileToolStripMenuItem.Size = new System.Drawing.Size(443, 26);
+            this.importTakeOffsExcelFileToolStripMenuItem.Text = "1. Import take off Excel file";
             this.importTakeOffsExcelFileToolStripMenuItem.Click += new System.EventHandler(this.importTakeOffsExcelFileToolStripMenuItem_Click);
             // 
             // importCSVFileToolStripMenuItem
             // 
             this.importCSVFileToolStripMenuItem.Name = "importCSVFileToolStripMenuItem";
-            this.importCSVFileToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
-            this.importCSVFileToolStripMenuItem.Text = "Import CSV file decoded";
+            this.importCSVFileToolStripMenuItem.Size = new System.Drawing.Size(443, 26);
+            this.importCSVFileToolStripMenuItem.Text = "2. Import CSV file decoded";
             this.importCSVFileToolStripMenuItem.Click += new System.EventHandler(this.importCSVFileToolStripMenuItem_Click);
             // 
             // importClassificationACsExcelFileToolStripMenuItem
             // 
             this.importClassificationACsExcelFileToolStripMenuItem.Name = "importClassificationACsExcelFileToolStripMenuItem";
-            this.importClassificationACsExcelFileToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
-            this.importClassificationACsExcelFileToolStripMenuItem.Text = "Import classification ACs Excel file";
+            this.importClassificationACsExcelFileToolStripMenuItem.Size = new System.Drawing.Size(443, 26);
+            this.importClassificationACsExcelFileToolStripMenuItem.Text = "3. Import classification ACs Excel file";
             this.importClassificationACsExcelFileToolStripMenuItem.Click += new System.EventHandler(this.importClassificationACsExcelFileToolStripMenuItem_Click);
             // 
             // importSID06RToolStripMenuItem
             // 
             this.importSID06RToolStripMenuItem.Name = "importSID06RToolStripMenuItem";
-            this.importSID06RToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
-            this.importSID06RToolStripMenuItem.Text = "Import SID 06R";
+            this.importSID06RToolStripMenuItem.Size = new System.Drawing.Size(443, 26);
+            this.importSID06RToolStripMenuItem.Text = "4. Import SID 06R";
             this.importSID06RToolStripMenuItem.Click += new System.EventHandler(this.importSID06RToolStripMenuItem_Click);
             // 
             // importSID24LToolStripMenuItem
             // 
             this.importSID24LToolStripMenuItem.Name = "importSID24LToolStripMenuItem";
-            this.importSID24LToolStripMenuItem.Size = new System.Drawing.Size(416, 26);
-            this.importSID24LToolStripMenuItem.Text = "Import SID 24L";
+            this.importSID24LToolStripMenuItem.Size = new System.Drawing.Size(443, 26);
+            this.importSID24LToolStripMenuItem.Text = "5. Import SID 24L";
             this.importSID24LToolStripMenuItem.Click += new System.EventHandler(this.importSID24LToolStripMenuItem_Click);
             // 
             // trajectoriesSimulatorToolStripMenuItem
@@ -163,34 +164,33 @@ namespace AsterixDecoder
             this.trajectoriesSimulatorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.computeCompatibilitiesToolStripMenuItem,
             this.saveCompatibilitiesInCSVToolStripMenuItem,
-            this.getCompleteTakeOffsCSVToolStripMenuItem,
-            this.tRIALSToolStripMenuItem});
+            this.getCompleteTakeOffsCSVToolStripMenuItem});
             this.trajectoriesSimulatorToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
             this.trajectoriesSimulatorToolStripMenuItem.Name = "trajectoriesSimulatorToolStripMenuItem";
-            this.trajectoriesSimulatorToolStripMenuItem.Size = new System.Drawing.Size(131, 24);
+            this.trajectoriesSimulatorToolStripMenuItem.Size = new System.Drawing.Size(131, 26);
             this.trajectoriesSimulatorToolStripMenuItem.Text = "Analyse data";
             this.trajectoriesSimulatorToolStripMenuItem.Click += new System.EventHandler(this.trajectoriesSimulatorToolStripMenuItem_Click);
             // 
             // computeCompatibilitiesToolStripMenuItem
             // 
             this.computeCompatibilitiesToolStripMenuItem.Name = "computeCompatibilitiesToolStripMenuItem";
-            this.computeCompatibilitiesToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
-            this.computeCompatibilitiesToolStripMenuItem.Text = "Compute compatibilities";
+            this.computeCompatibilitiesToolStripMenuItem.Size = new System.Drawing.Size(362, 26);
+            this.computeCompatibilitiesToolStripMenuItem.Text = "6. Compute compatibilities";
             this.computeCompatibilitiesToolStripMenuItem.Click += new System.EventHandler(this.computeCompatibilitiesToolStripMenuItem_Click);
             // 
             // saveCompatibilitiesInCSVToolStripMenuItem
             // 
             this.saveCompatibilitiesInCSVToolStripMenuItem.Name = "saveCompatibilitiesInCSVToolStripMenuItem";
-            this.saveCompatibilitiesInCSVToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
-            this.saveCompatibilitiesInCSVToolStripMenuItem.Text = "Save compatibilities in CSV";
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Size = new System.Drawing.Size(362, 26);
+            this.saveCompatibilitiesInCSVToolStripMenuItem.Text = "7. Save compatibilities in CSV";
             this.saveCompatibilitiesInCSVToolStripMenuItem.Click += new System.EventHandler(this.saveCompatibilitiesInCSVToolStripMenuItem_Click);
             // 
-            // tRIALSToolStripMenuItem
+            // getCompleteTakeOffsCSVToolStripMenuItem
             // 
-            this.tRIALSToolStripMenuItem.Name = "tRIALSToolStripMenuItem";
-            this.tRIALSToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
-            this.tRIALSToolStripMenuItem.Text = "TRIALS";
-            this.tRIALSToolStripMenuItem.Click += new System.EventHandler(this.tRIALSToolStripMenuItem_Click);
+            this.getCompleteTakeOffsCSVToolStripMenuItem.Name = "getCompleteTakeOffsCSVToolStripMenuItem";
+            this.getCompleteTakeOffsCSVToolStripMenuItem.Size = new System.Drawing.Size(362, 26);
+            this.getCompleteTakeOffsCSVToolStripMenuItem.Text = "8. Save complete take offs CSV";
+            this.getCompleteTakeOffsCSVToolStripMenuItem.Click += new System.EventHandler(this.getCompleteTakeOffsCSVToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -198,11 +198,12 @@ namespace AsterixDecoder
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cSVToolboxToolStripMenuItem,
-            this.trajectoriesSimulatorToolStripMenuItem});
+            this.trajectoriesSimulatorToolStripMenuItem,
+            this.simulationToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1560, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1560, 30);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -380,12 +381,22 @@ namespace AsterixDecoder
             this.gMapControl1.Zoom = 0D;
             this.gMapControl1.Load += new System.EventHandler(this.gMapControl1_Load);
             // 
-            // getCompleteTakeOffsCSVToolStripMenuItem
+            // simulationToolStripMenuItem
             // 
-            this.getCompleteTakeOffsCSVToolStripMenuItem.Name = "getCompleteTakeOffsCSVToolStripMenuItem";
-            this.getCompleteTakeOffsCSVToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
-            this.getCompleteTakeOffsCSVToolStripMenuItem.Text = "Get complete take offs CSV";
-            this.getCompleteTakeOffsCSVToolStripMenuItem.Click += new System.EventHandler(this.getCompleteTakeOffsCSVToolStripMenuItem_Click);
+            this.simulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.runSimulationToolStripMenuItem});
+            this.simulationToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
+            this.simulationToolStripMenuItem.Name = "simulationToolStripMenuItem";
+            this.simulationToolStripMenuItem.Size = new System.Drawing.Size(113, 26);
+            this.simulationToolStripMenuItem.Text = "Simulation";
+            this.simulationToolStripMenuItem.Click += new System.EventHandler(this.simulationToolStripMenuItem_Click);
+            // 
+            // runSimulationToolStripMenuItem
+            // 
+            this.runSimulationToolStripMenuItem.Name = "runSimulationToolStripMenuItem";
+            this.runSimulationToolStripMenuItem.Size = new System.Drawing.Size(245, 26);
+            this.runSimulationToolStripMenuItem.Text = "9. Run simulation";
+            this.runSimulationToolStripMenuItem.Click += new System.EventHandler(this.runSimulationToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -446,8 +457,9 @@ namespace AsterixDecoder
         private System.Windows.Forms.ToolStripMenuItem importSID24LToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem computeCompatibilitiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveCompatibilitiesInCSVToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tRIALSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getCompleteTakeOffsCSVToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem simulationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem runSimulationToolStripMenuItem;
     }
 }
 
