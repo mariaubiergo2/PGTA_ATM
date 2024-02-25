@@ -10,9 +10,9 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using System.Xml;
 using AsterixDecoder.Data_Items_Objects;
-using IronXL;
 using CsvHelper;
 using System.Globalization;
+using System.Data;
 
 namespace AsterixDecoder
 {
@@ -93,10 +93,10 @@ namespace AsterixDecoder
             pictureBoxLogo.SizeMode = PictureBoxSizeMode.StretchImage;
 
             //Logo Label
-            title.Font = new Font("Cascadia Code", 16);
+            title.Font = new System.Drawing.Font("Cascadia Code", 16);
             title.Text = "AsTeRiX DeCoDeR";
             title.TextAlign = ContentAlignment.TopCenter;
-            title.BackColor = Color.Black;            
+            title.BackColor = System.Drawing.Color.Black;            
                         
 
             //Expand screen
@@ -114,7 +114,7 @@ namespace AsterixDecoder
 
         private void ResizeAllElements()
         {
-            foreach (Control control in this.Controls)
+            foreach (System.Windows.Forms.Control control in this.Controls)
             {
                 if (control.Name != "flowLayoutPanel1")
                 {
@@ -749,62 +749,70 @@ namespace AsterixDecoder
             }
         }
 
+
+
+
+
         private void LeerArchivoExcel(string rutaArchivo)
         {
             this.despeguesList = new List<Ruta>();
             this.ACclassification = new ACclassification();
 
             try
-            {
-                WorkBook workBook = WorkBook.Load(rutaArchivo);
-                WorkSheet workSheet = workBook.WorkSheets.First();
+            {               
+
+                DataTable dataTable = usefulFunctions.readExcelSheet(rutaArchivo, true);
 
                 progressLbl.Visible = true;
                 progressBar1.Visible = true;
-                
-                // Iterate over all cells in the worsheet
-                int row = 2;
-                while (row <= workSheet.RowCount)
+
+                int totalRows = dataTable.Rows.Count;
+                int rowIndex = 1;
+
+                foreach (DataRow row in dataTable.Rows)
                 {
-                    int valProgress = Convert.ToInt32(Convert.ToDouble(row) / workSheet.RowCount * 100);
+                    
+                    int valProgress = Convert.ToInt32(Convert.ToDouble(rowIndex) / totalRows * 100);
                     ReportProgess(valProgress);
+                    rowIndex++;
 
                     Ruta despegue = new Ruta(
-                        Convert.ToString(workSheet["A" + Convert.ToString(row)]),
-                        Convert.ToString(workSheet["B" + Convert.ToString(row)]),
-                        Convert.ToString(workSheet["C" + Convert.ToString(row)]),
-                        Convert.ToString(workSheet["D" + Convert.ToString(row)]),
-                        Convert.ToString(workSheet["E" + Convert.ToString(row)]),
-                        Convert.ToString(workSheet["F" + Convert.ToString(row)]),
-                        Convert.ToString(workSheet["G" + Convert.ToString(row)]),
-                        Convert.ToString(workSheet["H" + Convert.ToString(row)]),
-                        Convert.ToString(workSheet["I" + Convert.ToString(row)])
+                        Convert.ToString(row[0]),
+                        Convert.ToString(row[1]),
+                        Convert.ToString(row[2]),
+                        Convert.ToString(row[3]),
+                        Convert.ToString(row[4]),
+                        Convert.ToString(row[5]),
+                        Convert.ToString(row[6]),
+                        Convert.ToString(row[7]),
+                        Convert.ToString(row[8])
                         );
 
                     //No s'afegeixen les que no surten per la 24L o 06R
                     if (despegue.id != null)
-                    {                        
+                    {
                         this.despeguesList.Add(despegue);
                         this.ACclassification.estelaDictionary.Add(despegue.id, despegue.Estela);
                     }
 
-                    row++;
+                    Console.WriteLine();
                 }
 
                 progressLbl.Visible = false;
                 progressBar1.Visible = false;
 
+                popUpLabel("✅ Correctly loaded " + Convert.ToString(despeguesList.Count) + " take off!");
 
-                popUpLabel("✅ Correctly loaded " + Convert.ToString(despeguesList.Count)+ " take off!");
-                                
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                popUpLabel("❌ Something went wrong... Is the EXCEL file opened somewhere else?");
+                popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?");
             }
 
         }
+
+
 
         private void importClassificationACsExcelFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -818,67 +826,53 @@ namespace AsterixDecoder
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         string selectedFilePath = openFileDialog.FileName;
-                                            
-                        WorkBook workBook = WorkBook.Load(selectedFilePath);
-                        WorkSheet workSheet = workBook.WorkSheets.First();
 
-                        //this.ACclassification = new ACclassification();
+                        DataTable dataTable = usefulFunctions.readExcelSheet(selectedFilePath, true);
 
-                        // Iterate over all cells in the worsheet
-                        foreach (var cell in workSheet)
+                        foreach (DataRow row in dataTable.Rows)
                         {
-                            if (cell.Text != "")
+                            // Iterate through the columns of the current row
+                            foreach (DataColumn column in dataTable.Columns)
                             {
-                                if (cell.AddressString.Contains("A"))
+                                string res = Convert.ToString(row[column]);
+                                string col = column.ColumnName;
+
+                                
+
+                                if (res != "")
                                 {
-                                    //AQUESTS IFS ES PODRIEN TREURE I ARREANDO
-                                    //HP airplane
-                                    if (cell.Text != "HP")
+                                    Console.WriteLine(res + " " + col);
+
+                                    if (col == "HP")
                                     {
-                                        //Classify it girl
-                                        this.ACclassification.AddModelClassification(cell.Text, "HP");
+                                        this.ACclassification.AddModelClassification(res, "HP");
+                                    }
+                                    else if (col == "NR")
+                                    {
+                                        this.ACclassification.AddModelClassification(res, "NR");
+                                    }
+                                    else if (col == "NR+")
+                                    {
+                                        this.ACclassification.AddModelClassification(res, "NR+");
+                                    }
+                                    else if (col == "NR-")
+                                    {
+                                        this.ACclassification.AddModelClassification(res, "NR-");
+                                    }
+                                    else if (col == "LP")
+                                    {
+                                        this.ACclassification.AddModelClassification(res, "LP");
                                     }
                                 }
-                                else if (cell.AddressString.Contains("B"))
-                                {
-                                    //NR airplane
-                                    if (cell.Text != "NR")
-                                    {
-                                        this.ACclassification.AddModelClassification(cell.Text, "NR");
-                                    }
-                                }
-                                else if (cell.AddressString.Contains("C"))
-                                {
-                                    //NR+ airplane
-                                    if (cell.Text != "NR+")
-                                    {
-                                        this.ACclassification.AddModelClassification(cell.Text, "NR+");
-                                    }
-                                }
-                                else if (cell.AddressString.Contains("D"))
-                                {
-                                    //NR- airplane
-                                    if (cell.Text != "NR-")
-                                    {
-                                        this.ACclassification.AddModelClassification(cell.Text, "NR-");
-                                    }
-                                }
-                                else if (cell.AddressString.Contains("E"))
-                                {
-                                    //LP airplane
-                                    if (cell.Text != "LP")
-                                    {
-                                        this.ACclassification.AddModelClassification(cell.Text, "LP");
-                                    }
-                                }
+                                
                                 else
                                 {
-                                    Console.WriteLine("Cell {0} has value '{1}'", cell.AddressString, cell.Text);
                                 }
 
-                            }                 
-
+                            }
+                            Console.WriteLine();
                         }
+
                         popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.classificationDictionary.Keys.Count) + " aircrafts classifications.");
 
                     }
@@ -904,44 +898,39 @@ namespace AsterixDecoder
                     {
                         string selectedFilePath = openFileDialog.FileName;
 
-                        WorkBook workBook = WorkBook.Load(selectedFilePath);
-                        WorkSheet workSheet = workBook.WorkSheets.First();
+                        DataTable dataTable = usefulFunctions.readExcelSheet(selectedFilePath, true);
 
-                        // Iterate over all cells in the worsheet
-                        foreach (var cell in workSheet)
+                        foreach (DataRow row in dataTable.Rows)
                         {
-                            if (cell.Text != "")
+                            // Iterate through the columns of the current row
+                            foreach (DataColumn column in dataTable.Columns)
                             {
-                                //string res = usefulFunctions.RemoveEnd(cell.Text, 2);
-                                string res = cell.Text;
-
-                                if (cell.AddressString.Contains("A"))
+                                string res = Convert.ToString(row[column]);
+                                string col = column.ColumnName;
+                                if (res != "")
                                 {
-                                    if (cell.Text != "Misma_SID_G1")
+                                    if (col == "Misma_SID_G1")
                                     {
                                         this.ACclassification.SIDDictionary.Add(res, "G1_06R");
+
                                     }
-                                }
-                                else if (cell.AddressString.Contains("B"))
-                                {
-                                    if (cell.Text != "Misma_SID_G2")
+                                    else if (col == "Misma_SID_G2")
                                     {
                                         this.ACclassification.SIDDictionary.Add(res, "G2_06R");
                                     }
-                                }
-                                else if (cell.AddressString.Contains("C"))
-                                {
-                                    if (cell.Text != "Misma_SID_G3")
+                                    else if (col == "Misma_SID_G3")
                                     {
                                         this.ACclassification.SIDDictionary.Add(res, "G3_06R");
                                     }
-                                }                                
-                                else
-                                {
-                                    Console.WriteLine("Cell {0} has value '{1}'", cell.AddressString, cell.Text);
+                                    else
+                                    {
+                                        Console.WriteLine("Cell {0} has value '{1}'", col, res);
+                                    }
                                 }
+                                
 
                             }
+                            Console.WriteLine();
                         }
 
                         popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.SIDDictionary.Keys.Count) + " total SIDs.");
@@ -951,10 +940,12 @@ namespace AsterixDecoder
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?");
+                    popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?\n"+ex);
                 }
             }
         }
+
+
 
         private void importSID24LToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -969,43 +960,41 @@ namespace AsterixDecoder
                     {
                         string selectedFilePath = openFileDialog.FileName;
 
-                        WorkBook workBook = WorkBook.Load(selectedFilePath);
-                        WorkSheet workSheet = workBook.WorkSheets.First();
+                        DataTable dataTable = usefulFunctions.readExcelSheet(selectedFilePath, true);
 
-                        // Iterate over all cells in the worsheet
-                        foreach (var cell in workSheet)
+                        foreach (DataRow row in dataTable.Rows)
                         {
-                            if (cell.Text != "")
+                            // Iterate through the columns of the current row
+                            foreach (DataColumn column in dataTable.Columns)
                             {
-                                //string res = usefulFunctions.RemoveEnd(cell.Text, 2);
-                                string res = cell.Text;
-
-                                if (cell.AddressString.Contains("A"))
+                                string res = Convert.ToString(row[column]);
+                                
+                                if (res != "")
                                 {
-                                    if (cell.Text != "Misma_SID_G1")
+                                    string col = column.ColumnName;
+
+                                    if (col == "Misma_SID_G1")
                                     {
                                         this.ACclassification.SIDDictionary.Add(res, "G1_24L");
+
                                     }
-                                }
-                                else if (cell.AddressString.Contains("B"))
-                                {
-                                    if (cell.Text != "Misma_SID_G2")
+                                    else if (col == "Misma_SID_G2")
                                     {
                                         this.ACclassification.SIDDictionary.Add(res, "G2_24L");
                                     }
-                                }
-                                else if (cell.AddressString.Contains("C"))
-                                {
-                                    if (cell.Text != "Misma_SID_G3")
+                                    else if (col == "Misma_SID_G3")
                                     {
                                         this.ACclassification.SIDDictionary.Add(res, "G3_24L");
                                     }
+                                    else
+                                    {
+                                        Console.WriteLine("Cell {0} has value '{1}'", col, res);
+                                    }
                                 }
-                                else
-                                {
-                                    Console.WriteLine("Cell {0} has value '{1}'", cell.AddressString, cell.Text);
-                                }
+                                                            
+
                             }
+                            Console.WriteLine();
                         }
 
                         popUpLabel("✅ Correctly loaded " + Convert.ToString(this.ACclassification.SIDDictionary.Keys.Count) + " total SIDs.");
@@ -1014,11 +1003,11 @@ namespace AsterixDecoder
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
                     popUpLabel("❌ Something went wrong... Is the EXCEL file open somewhere else?");
                 }
             }
         }
+
 
         private void computeCompatibilitiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1182,15 +1171,7 @@ namespace AsterixDecoder
 
         }
 
-        private void tRIALSToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string d1 = "05/02/2023 14:10:20";
-            string d2 = "05/02/2023 14:10:19";
-            
-            Console.WriteLine(d1.Substring(1));
-            Console.WriteLine(Convert.ToString(d1.ToCharArray()[0]));
-
-        }
+        
 
         private void getCompleteTakeOffsCSVToolStripMenuItem_Click(object sender, EventArgs e)
         {

@@ -41,7 +41,7 @@ namespace AsterixDecoder.Data_Items_Objects
             }
             else
             {
-                return "NR";
+                return "R";
             }
         }
 

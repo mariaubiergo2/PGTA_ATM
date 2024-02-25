@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,6 +63,26 @@ namespace AsterixDecoder.Data_Items_Objects
 
         public DateTime ParseDateTime(string input)
         {
+            double result;
+
+            // Parse the string using the InvariantCulture
+            if (double.TryParse(input, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
+            {
+                Console.WriteLine("Parsed successfully: " + result);
+            }
+            else
+            {
+                Console.WriteLine("Failed to parse.");
+            }
+
+
+            DateTime dt = DateTime.FromOADate(result);
+
+            return dt;
+            
+            
+            /*
+
             string[] temps = input.Split(' ')[1].Split(':');
             string hora = temps[0];
 
@@ -78,6 +100,7 @@ namespace AsterixDecoder.Data_Items_Objects
             DateTime dt = DateTime.ParseExact(newInput, formats, null);
 
             return dt;
+            */
         }
 
         public void setIncumplimentos (AC_pair pareja)

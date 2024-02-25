@@ -46,6 +46,8 @@ namespace AsterixDecoder
             this.saveCompatibilitiesInCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getCompleteTakeOffsCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.simulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runSimulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.infoLbl = new System.Windows.Forms.Label();
             this.hourBox = new System.Windows.Forms.TextBox();
@@ -57,8 +59,6 @@ namespace AsterixDecoder
             this.viewPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.gmap2 = new GMap.NET.WindowsForms.GMapControl();
             this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
-            this.simulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.runSimulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fowardPictureBox)).BeginInit();
@@ -87,7 +87,7 @@ namespace AsterixDecoder
             this.title.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.title.Location = new System.Drawing.Point(1249, 476);
             this.title.Name = "title";
-            this.title.Size = new System.Drawing.Size(46, 17);
+            this.title.Size = new System.Drawing.Size(44, 16);
             this.title.TabIndex = 5;
             this.title.Text = "label1";
             // 
@@ -120,7 +120,7 @@ namespace AsterixDecoder
             this.importSID24LToolStripMenuItem});
             this.cSVToolboxToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
             this.cSVToolboxToolStripMenuItem.Name = "cSVToolboxToolStripMenuItem";
-            this.cSVToolboxToolStripMenuItem.Size = new System.Drawing.Size(104, 26);
+            this.cSVToolboxToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
             this.cSVToolboxToolStripMenuItem.Text = "Load data";
             this.cSVToolboxToolStripMenuItem.Click += new System.EventHandler(this.cSVToolboxToolStripMenuItem_Click);
             // 
@@ -167,7 +167,7 @@ namespace AsterixDecoder
             this.getCompleteTakeOffsCSVToolStripMenuItem});
             this.trajectoriesSimulatorToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
             this.trajectoriesSimulatorToolStripMenuItem.Name = "trajectoriesSimulatorToolStripMenuItem";
-            this.trajectoriesSimulatorToolStripMenuItem.Size = new System.Drawing.Size(131, 26);
+            this.trajectoriesSimulatorToolStripMenuItem.Size = new System.Drawing.Size(131, 24);
             this.trajectoriesSimulatorToolStripMenuItem.Text = "Analyse data";
             this.trajectoriesSimulatorToolStripMenuItem.Click += new System.EventHandler(this.trajectoriesSimulatorToolStripMenuItem_Click);
             // 
@@ -203,9 +203,26 @@ namespace AsterixDecoder
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1560, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(1560, 28);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // simulationToolStripMenuItem
+            // 
+            this.simulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.runSimulationToolStripMenuItem});
+            this.simulationToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
+            this.simulationToolStripMenuItem.Name = "simulationToolStripMenuItem";
+            this.simulationToolStripMenuItem.Size = new System.Drawing.Size(113, 24);
+            this.simulationToolStripMenuItem.Text = "Simulation";
+            this.simulationToolStripMenuItem.Click += new System.EventHandler(this.simulationToolStripMenuItem_Click);
+            // 
+            // runSimulationToolStripMenuItem
+            // 
+            this.runSimulationToolStripMenuItem.Name = "runSimulationToolStripMenuItem";
+            this.runSimulationToolStripMenuItem.Size = new System.Drawing.Size(245, 26);
+            this.runSimulationToolStripMenuItem.Text = "9. Run simulation";
+            this.runSimulationToolStripMenuItem.Click += new System.EventHandler(this.runSimulationToolStripMenuItem_Click);
             // 
             // timer1
             // 
@@ -217,7 +234,7 @@ namespace AsterixDecoder
             this.infoLbl.Font = new System.Drawing.Font("Cascadia Code", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.infoLbl.Location = new System.Drawing.Point(13, 541);
             this.infoLbl.Name = "infoLbl";
-            this.infoLbl.Size = new System.Drawing.Size(78, 25);
+            this.infoLbl.Size = new System.Drawing.Size(76, 24);
             this.infoLbl.TabIndex = 12;
             this.infoLbl.Text = "label1";
             // 
@@ -380,23 +397,6 @@ namespace AsterixDecoder
             this.gMapControl1.TabIndex = 13;
             this.gMapControl1.Zoom = 0D;
             this.gMapControl1.Load += new System.EventHandler(this.gMapControl1_Load);
-            // 
-            // simulationToolStripMenuItem
-            // 
-            this.simulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.runSimulationToolStripMenuItem});
-            this.simulationToolStripMenuItem.Font = new System.Drawing.Font("Cascadia Code", 9F);
-            this.simulationToolStripMenuItem.Name = "simulationToolStripMenuItem";
-            this.simulationToolStripMenuItem.Size = new System.Drawing.Size(113, 26);
-            this.simulationToolStripMenuItem.Text = "Simulation";
-            this.simulationToolStripMenuItem.Click += new System.EventHandler(this.simulationToolStripMenuItem_Click);
-            // 
-            // runSimulationToolStripMenuItem
-            // 
-            this.runSimulationToolStripMenuItem.Name = "runSimulationToolStripMenuItem";
-            this.runSimulationToolStripMenuItem.Size = new System.Drawing.Size(245, 26);
-            this.runSimulationToolStripMenuItem.Text = "9. Run simulation";
-            this.runSimulationToolStripMenuItem.Click += new System.EventHandler(this.runSimulationToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
